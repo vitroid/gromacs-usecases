@@ -1,0 +1,10 @@
+#include "atomtypes.top"
+#include "normal.top"
+
+[ system ]
+Optimized ice structure
+; THF hydrate and solution coexistence
+
+[ molecules ]
+ICE   1024
+; THF    256

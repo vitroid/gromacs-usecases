@@ -1,0 +1,25 @@
+[ defaults ]
+; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ
+1               2               no              0.0     0.0   
+
+
+[ atomtypes ]
+; TIP4P/Ice
+; name      at.num  mass     charge ptype  sigma      epsilon
+HW_Ice       1       0.00    0.0000  A   0.00000e+00  0.00000e+00
+OW_Ice       8       0.00    0.0000  A   3.16680e-01  8.82170e-01
+MW           0       0.000   0.0000  A   0.00000e+00  0.00000e+00
+; ; 5-site THF.(OPLS)   J. Comput. Chem. 11, 958-971 (1990).
+; ; charges are modified by TY
+; O_THF        8      16.00    0.0000  A   3.000e-01    7.11280e-01
+; Ca_THF       6      14.03    0.0000  A   3.800e-01    4.93712e-01
+; Cb_THF       6      14.03    0.0000  A   3.905e-01    4.93712e-01
+; ; 6th-site of THF for the position constrain
+; Cm_THF       0       0.00    0.0000  A   0.0          0.0
+; ; tip4p/2005
+; tip4p2kO    OW	8     15.99940     0.000       A    3.1589e-01  7.749e-01
+; opls_113   OW	8     15.99940     0.000       A    3.15365e-01  6.48520e-01
+; opls_114   HW	1      1.00800     0.520       A    0.00000e+00  0.00000e+00
+; opls_115   MW	0      0.00000    -1.040       D    0.00000e+00  0.00000e+00
+; ;cPentane
+; CPENTM M 1 14.0 0.0 A 0.388 0.4680782

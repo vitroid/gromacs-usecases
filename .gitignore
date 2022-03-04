@@ -1,0 +1,6 @@
+\#*
+*.tpr
+structure_optimization/*/*.gro
+structure_optimization/*/*.tpr
+structure_optimization/*/*.trr
+*.cpt
