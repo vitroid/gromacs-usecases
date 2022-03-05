@@ -10,11 +10,11 @@ def getcell(file):
 
 
 while True:
-    # try:
-    Natom, cell = getcell(sys.stdin)
-    print(np.product(cell) / (Natom//4))
-    # except:
-        # sys.exit(0)
+    try:
+        Natom, cell = getcell(sys.stdin)
+        print(np.product(cell) / (Natom//4))
+    except ValueError:
+        sys.exit(0)
 
 
 

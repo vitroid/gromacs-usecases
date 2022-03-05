@@ -32,7 +32,7 @@ ref_t          = 2   ; 温度
 pcoupl          = c-rescale ; berendsen ; the barostat
 ref-p           = 1         ; the pressure
 compressibility = 4.5e-5
-tau-p           = 5         ; barostat time scale is 5ps
+tau-p           = 1         ; barostat time scale is 1ps
 
 
 ; generate initial velocities at 276 K
