@@ -1,0 +1,10 @@
+*.tpr
+*.gro
+*.trr
+*.cpt
+*.edr
+*.log
+mdout.mdp
+*.vol
+*.xvg
+*.gro.top

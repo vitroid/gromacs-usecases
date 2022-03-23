@@ -2,7 +2,7 @@ GMX = /Users/matto/gromacs/2022/bin/gmx_d  #double precision but too slow
 GMX = gmx                                  #homebrew
 
 all:
-	for str in TS1x222 HS1x222 CS1x222 CS2x222 C14x222 C36x222 mux222 Tx111 px222 psigmax222; do echo $$str.all; done | xargs make -k
+	for str in TS1x222 HS1x222 CS1x222 CS2x222 C14x222 C36x222 mux222 Tx111 px222 psigmax222 10qc6 12qc1; do echo $$str.all; done | xargs make -k
 %.all: 
 	make $*.gro
 	make $*.0.q.gro
@@ -10,6 +10,10 @@ all:
 	make $*.1.q.gro
 	make $*.1.q.xvg
 	echo done.
+10qc6.gro:
+	genice2 cockayne[6] -w ice > $@
+12qc1.gro:
+	genice2 stampfli[1] -w ice > $@
 %x444.gro:
 	genice2 $* -r 4 4 4 -w ice > $@
 %x222.gro:

@@ -1,10 +1,1 @@
 \#*
-*.tpr
-structure_optimization/*/*.gro
-structure_optimization/*/*.tpr
-structure_optimization/*/*.trr
-*.cpt
-*.edr
-*.log
-mdout.mdp
-*.vol
