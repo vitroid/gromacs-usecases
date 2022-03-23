@@ -17,7 +17,8 @@ config:
 		-DGMX_PREFER_STATIC_LIBS=ON \
 		-DGMX_DOUBLE=ON  \
 		-DCMAKE_C_COMPILER=/opt/homebrew/bin/gcc-11 \
-		-DCMAKE_CXX_COMPILER=/opt/homebrew/bin/g++-11
+		-DCMAKE_CXX_COMPILER=/opt/homebrew/bin/g++-11 \
+		-DCMAKE_OSX_SYSROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk
 
 prepare:
 	-cd $(SRCBASE); wget --no-clobber $(SRCURL) && tar zxf gromacs-2022.tar.gz
