@@ -26,7 +26,10 @@ source ~/gromacs/2022_s/bin/GMXRC.bash
 ```
 でパスを通しておく。
 
+# Benchmark
 
+* M1/`-nt 8`: 2.44 ns/day
+* M1/`-nt 4`: 2.22 ns/day
 
 # 倍精度
 
@@ -43,6 +46,12 @@ source ~/gromacs/2022_d/bin/GMXRC.bash
 ```
 でパスを通しておく。
 
+# Benchmark
+
+* M1/`-nt 8`: 3.026 ns/day (?? 倍精度になってないかも)
+* M1/`-nt 4`: ns/day
+
+
 # 単精度+GPU
 
 ```shell
@@ -57,3 +66,5 @@ make -f gpu.makefile install
 source ~/gromacs/2022_g/bin/GMXRC.bash
 ```
 でパスを通しておく。
+
+LYNCがOpenCLに対応していないため実質使えない。
