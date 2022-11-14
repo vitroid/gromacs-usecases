@@ -2,7 +2,7 @@
 
 # Z座標が指定の範囲にある原子のみ固定する。
 
-from read_gro3 import read_gro
+from gromacs import read_gro
 
 import sys
 
@@ -20,4 +20,3 @@ for i in range(len(frame["atom"])):
             print(s)
             s = ""
 print(s)
-
