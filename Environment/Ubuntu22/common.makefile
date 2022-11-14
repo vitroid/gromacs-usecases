@@ -9,7 +9,5 @@ config:
 
 prepare:
 	-cd $(SRCBASE); wget --no-check-certificate --no-clobber $(SRCURL) && tar zxf gromacs-2022.tar.gz
-	-mkdir $(SRC)
-
-clean:
 	-rm -rf $(SRC)
+	-mkdir $(SRC)

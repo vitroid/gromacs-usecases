@@ -31,8 +31,11 @@ source ~/gromacs/Ubuntu22/2022_s/bin/GMXRC.bash
 ```
 でパスを通しておく。
 
+## Benchmark
 
-<!-- # 倍精度
+* Chuck4/`-nt 8`: 5.4 ns/day
+
+# 倍精度
 
 ```shell
 make -f double.makefile prepare
@@ -41,11 +44,11 @@ make -f double.makefile
 make -f double.makefile install
 ```
 
-実行ファイルは~/gromacs/2022_d/binにインストールされるので、
+実行ファイルは~/gromacs/Ubuntu22/2022_d/binにインストールされるので、
 ```shell
-source ~/gromacs/2022_d/bin/GMXRC.bash
+source ~/gromacs/Ubuntu22/2022_d/bin/GMXRC.bash
 ```
-でパスを通しておく。-->
+でパスを通しておく。
 
 # 単精度+GPU
 
@@ -64,4 +67,4 @@ source ~/gromacs/Ubuntu22/2022_g/bin/GMXRC.bash
 
 ## Benchmark
 
-* Chuck4/`-nt 8`: 5.3 ns/day
+* Chuck4/`-nt 8`: 5.3 ns/day GPUを利用する設定が不十分らしい。
