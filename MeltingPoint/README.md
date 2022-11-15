@@ -357,7 +357,7 @@ gmx dump -e 00001.edr | python undump.pu > 00001.txt
 
 しかし、融点に近づいてくると、完全に凍るまでの時間がかかりすぎます。また、十分に長い計算ができない場合も、完全な凍結を確認できません。そんな場合は、最終的なポテンシャルエネルギーが得られるのを待つ代わりに、ポテンシャルエネルギーの減少/増加速度を測定し、その逆数を縦軸にとる、という方法もあります。
 
-## 課題
+## 7. 課題
 
 全員で手分けして、250 Kから290 Kまで(5 K間隔で?)のポテンシャルエネルギーの時間変化を採取し、それらの結果から、TIP4P/Iceの融点を推定して下さい。
 
@@ -365,6 +365,14 @@ gmx dump -e 00001.edr | python undump.pu > 00001.txt
 
 270 Kや、それに近い温度では、いつまでたっても凍りも融けもしない可能性がありますので、あまり長い計算をする必要はありません。
 
-# References
+## 8. 蛇足
 
-[^1] Conde, M. M., Rovere, M. & Gallo, P. High precision determination of the melting points of water TIP4P/2005 and water TIP4P/Ice models by the direct coexistence technique. J. Chem. Phys. 147, 244506 (2017)
+* 最初に作る氷を氷IIIや氷Vにし、適切な圧力を指定すれば、高圧氷の融点も推定可能です。
+* 固体と気体、あるいは液体と気体の間の相転移でも、同じ方法が使えます。
+* 固体と固体の間の相転移の場合は、シミュレーションセルの直方体の大きさをどちらかの固体の結晶の単位胞にあわせると、もう一方の結晶にとっては不都合になってしまうため、この方法で転移温度を決めることはできません。その場合は、固有振動数計算から自由エネルギーを求める別の技術を用います。
+* 水の場合、液体と、もう一つの液相の間の相転移も観察できます![^2]
+## 9. References
+
+[^1] Conde, M. M., Rovere, M. & Gallo, P. High precision determination of the melting points of water TIP4P/2005 and water TIP4P/Ice models by the direct coexistence technique. J. Chem. Phys. 147, 244506 (2017).
+
+[^2] Yagasaki, T., Matsumoto, M. & Tanaka, H. Spontaneous liquid-liquid phase separation of water. Phys. Rev. E Stat. Nonlin. Soft Matter Phys. 89, 020301 (2014).
