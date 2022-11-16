@@ -71,7 +71,7 @@ HW     1.00800       0.000       A   0.00000E+00   0.00000E+00
 5. 固定を解除した状態で、270 K(融点)付近でしばらくシミュレーションを行い、構造を緩和させます。
 
 
-![Alt text](https://www.researchgate.net/profile/Yeyue-Xiong/publication/344766724/figure/fig2/AS%3A948615635812356%401603179000926/Simulation-box-for-the-direct-coexistence-method-93-A-56-A-45-A_W640.jpg)
+![Alt text](https://i.gyazo.com/d8aa8995e76315701b7be2891e5ce2f9.jpg)
 
 > 右半分が融けた氷。左半分は固定されていて動かない。[^3]
 
@@ -363,7 +363,7 @@ gmx dump -e 00001.edr | python undump.pu > 00001.txt
 
 十分長いシミュレーションを行えば、融点より高温では氷は完全に融解し、低温では完全に凍結するはずです。そして、ポテンシャルエネルギーは一定値になります。
 
-![Alt text](https://www.researchgate.net/profile/Carlos-Vega-22/publication/268392333/figure/fig13/AS%3A647143996022785%401531302560244/Evolution-of-the-potential-energy-with-time-in-direct-coexistence-runs-of-the-TIP4P-2005_W640.jpg)
+![Alt text](https://i.gyazo.com/459da705c3832863b6f6b4c4c03643ad.jpg)
 
 > 共存状態から氷が成長する過程でのポテンシャルエネルギーの変化。低温ではより低いエネルギーに到達するものの、時間がかかる。 [^4]
 
