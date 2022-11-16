@@ -10,6 +10,12 @@
 
 ## 1. 水分子モデルを選ぶ
 
+TIP4P/Iceの形状の詳細は[リンク先](http://www.sklogwiki.org/SklogWiki/index.php/TIP4P/Ice_model_of_water)を見て下さい。
+
+水分子は3原子でできているのですが、相互作用を質点間の相互作用で近似的に表現するために、もう一点相互作用点を追加してあるのが四点モデルと呼ばれる水モデルの特徴です。
+
+![4-site model of water](http://www.sklogwiki.org/SklogWiki/images/a/a5/Four_site_water_model.png)
+
 TIP4P/Iceの分子モデルは`ice.top`に書かれています。
 
 ```
@@ -27,6 +33,7 @@ HW     1.00800       0.000       A   0.00000E+00   0.00000E+00
 ...
 ```
 
+
 全部で50行ぐらいのデータファイルで、ここには以下のような内容が書かれています。
 
 * 1つの水分子をいくつの点で近似表現しているか。
@@ -34,7 +41,7 @@ HW     1.00800       0.000       A   0.00000E+00   0.00000E+00
 * 点と点はどのように相互作用するか(Coulomb力とLennard-Jones力)
 * 分子は点と点をバネでつないだ柔軟な物体として扱うのか、それとも剛直で変形しない剛体として扱うのか。
 
-TIP4P/Iceの場合は
+[TIP4P/Ice](http://www.sklogwiki.org/SklogWiki/index.php/TIP4P/Ice_model_of_water)の場合は
 
 * 相互作用点は4点。
 * H-H間距離は約0.15 nm、O-H間距離は約0.1 nm。
@@ -57,11 +64,16 @@ TIP4P/Iceの場合は
 
 初期配置は、次の手順で準備します。
 
-1. GenIceツールを使い、氷の結晶構造を作ります。結晶は1:1:2の長い直方体形状になるようにします。
+1. [GenIce](https://github.com/vitroid/GenIce)ツールを使い、氷の結晶構造を作ります。結晶は1:1:2の長い直方体形状になるようにします。
 2. 水分子の半分を「固定」します。文字通り、最初の場所から動けなくします。
 3. 温度を500 Kまで上げて、短い分子動力学シミュレーションを行います。固定した部分は構造を保ちますが、それ以外の水分子はすぐに融解します。
 4. 温度を戻し、固定を解除します。これにより、液体と固体が半分ずつの初期構造ができます。
 5. 固定を解除した状態で、270 K(融点)付近でしばらくシミュレーションを行い、構造を緩和させます。
+
+
+![Alt text](https://www.researchgate.net/profile/Yeyue-Xiong/publication/344766724/figure/fig2/AS%3A948615635812356%401603179000926/Simulation-box-for-the-direct-coexistence-method-93-A-56-A-45-A_W640.jpg)
+
+> 右半分が融けた氷。左半分は固定されていて動かない。[^3]
 
 以下に、具体的な手順を書きます。
 
@@ -144,7 +156,7 @@ Gromacsでの分子動力学法の実行は、いつも3段階の手順になり
 
 ### 2-3-1 コンパイル
 
-拡張子`.mdp`には、分子動力学の実施方法を詳細に記載します。個々のパラメータの説明は、`fix.mdp`ファイルにコメントとして書きこんであります。計算時間、記録間隔、温度設定、圧力設定など、分子配置と相互作用以外のほぼすべての情報は`.mdp`に書きます。
+拡張子`.mdp`には、分子動力学の実施方法を詳細に記載します。個々のパラメータの説明は、`fix.mdp`ファイルにコメントとして書きこんであります。計算時間、記録間隔、温度設定、圧力設定など、分子配置と相互作用以外のほぼすべての情報は`.mdp`に書きます。`fix.mdp`の場合、それらに加えて`.ndx`ファイルで指定した`FIX`原子グループを固定することを指示します。
 
 以下のコマンドでこれをコンパイルして、`.tpr`ファイルを作ります。
 
@@ -204,13 +216,13 @@ gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
 
 入力を求められたら、0を押してリターンを押します。(System全体を可視化します)
 
-これで、vis.groファイルができました。かなり大きなファイルです。
+これで、`vis.gro`ファイルができました。かなり大きなファイルです。
 
 1. 上のリンクから、VMDをダウンロードし、インストールします。(ユーザ登録を求められるかもしれません)
 
 2. VMDを起動します。
 
-3. VSCodeで、vis.groを右クリックしてダウンロードします。
+3. VSCodeで、`vis.gro`を右クリックしてダウンロードします。
 
 4. Downloadしたファイルを、VMDのウィンドウにドラッグアンドドロップします。
 
@@ -222,7 +234,7 @@ gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
 
 シミュレーションの設定はさきほどと同じ、`.mdp`に書きます。今回は`relax.mdp`を使用します。
 
-VSCodeのファイル比較機能を使うと、`relax.mdp`と`fix.mdp`の違いがわかります。
+[VSCodeのファイル比較機能](https://www.mytecbits.com/microsoft/dot-net/compare-contents-of-two-files-in-vs-code)を使うと、`relax.mdp`と`fix.mdp`の違いがわかります。
 
 変更されているのは3点。
 
@@ -289,7 +301,7 @@ gmx mdrun -deffnm 00001
 
 あとの解析で、まだシミュレーションの時間が足りないことがわかった場合は、次のようにして計算を延長することができます。
 
-まず、さきほどgrompppで生成した.tprファイルの、実行時間を延長した新しい.tprファイルを作成します。 `-extend`オプションは追加計算する時間をps単位で指定します。元1 ns+追加2 nsなので、ファイル名は3nsとしました。
+まず、さきほど`gromppp`で生成した`.tpr`ファイルをもとに、実行時間を延長した新しい`.tpr`ファイルを作成します。 `-extend`オプションは追加計算する時間をps単位で指定します。元1 ns+追加2 nsなので、ファイル名は3nsとしました。
 
 ```
 gmx convert-tpr -extend 2000 -s 00001.tpr -o 3ns.tpr
@@ -318,7 +330,7 @@ gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
 
 もっと温度を下げればより速く凍るか、というとそうでもなくて、温度が低いと分子運動が遅くなるせいで、結晶成長も遅くなります。
 
-温度が高ければ高いほどはやく融けるのは間違いないので、290 Kでシミュレーションしてみると良いかもしれませんね。
+温度が高ければ高いほどはやく融けるのは間違いありません。
 
 
 ## 5. 判定
@@ -351,6 +363,10 @@ gmx dump -e 00001.edr | python undump.pu > 00001.txt
 
 十分長いシミュレーションを行えば、融点より高温では氷は完全に融解し、低温では完全に凍結するはずです。そして、ポテンシャルエネルギーは一定値になります。
 
+![Alt text](https://www.researchgate.net/profile/Carlos-Vega-22/publication/268392333/figure/fig13/AS%3A647143996022785%401531302560244/Evolution-of-the-potential-energy-with-time-in-direct-coexistence-runs-of-the-TIP4P-2005_W640.jpg)
+
+> 共存状態から氷が成長する過程でのポテンシャルエネルギーの変化。低温ではより低いエネルギーに到達するものの、時間がかかる。 [^4]
+
 一定値になるまでの時間は、融点から遠いほど短くなるはずです(ただし、上にも書いたように、温度がとても低くなると、分子運動が遅くなるために凍るまでにまた時間がかかるようになります。)
 
 仮に、完全凍結/完全融解までの時間が、融点からの温度差に反比例するものとします。その場合は、温度を横軸にとり、縦軸にポテンシャルエネルギーの変化が完了するまでの時間の逆数をとれば、低温側、高温側それぞれに曲線を描け、それらは融点で0に漸近する(すなわち、融点丁度では、いくらまっても凍りも融けもしない)と思われます。
@@ -363,7 +379,9 @@ gmx dump -e 00001.edr | python undump.pu > 00001.txt
 
 下の論文[^1]によれば、TIP4P/Iceの融点は270 Kとなっていますが、今回は高速化のために、分子数がかなり少ない系でシミュレーションを行っています。そのせいで、融点が270 Kからずれる可能性があります。
 
-270 Kや、それに近い温度では、いつまでたっても凍りも融けもしない可能性がありますので、あまり長い計算をする必要はありません。
+予想される融点である270 Kや、それに近い温度では、いつまでたっても凍りも融けもしない可能性がありますので、あまり長い計算をする必要はありません。
+
+相変化が終わるまでにかかる時間は、いつも一定ではありません。本当は、同じ温度で何回か測定し、平均値を求めるべきですが、今回は省略します。
 
 ## 8. 蛇足
 
@@ -371,8 +389,55 @@ gmx dump -e 00001.edr | python undump.pu > 00001.txt
 * 固体と気体、あるいは液体と気体の間の相転移でも、同じ方法が使えます。
 * 固体と固体の間の相転移の場合は、シミュレーションセルの直方体の大きさをどちらかの固体の結晶の単位胞にあわせると、もう一方の結晶にとっては不都合になってしまうため、この方法で転移温度を決めることはできません。その場合は、固有振動数計算から自由エネルギーを求める別の技術を用います。
 * 水の場合、液体と、もう一つの液相の間の相転移も観察できます![^2]
-## 9. References
+* この利用例では初期構造に氷Ihを選び、半分を融かして固液共存状態を準備しました。これを、圧力だけ高圧に切りかえても、氷IIIや氷Vと水の共存状態のシミュレーションにはなりません。結晶が自然に別の結晶に転移するには非常に時間がかかります。氷Ihに、氷Vほどの高圧を加えると、構造が崩壊して全部液体になるでしょう。
+
+## 9. 補遺
+
+### 9-1 Amazon EC2の個人利用
+
+Amazon EC2の無料枠でも、そこそこの計算はできます。
+
+1. AWSにアカウントを作ります。クレジットカード番号が必要になります。
+2. EC2ダッシュボードで、EC2インスタンスを作成します。インスタンスタイプt2.micro (2CPU)までなら、無料で利用できます。
+3. OSにはUbuntuを選びます。(ほかのディストリビューションやOSでも構いません)
+4. そのほか、ほとんどの設定はデフォルトのままでいいですが、不明な点は講師にお尋ね下さい。
+### 9-2 Gromacsとその他のツールのインストール
+
+クラウドを使わなくても、Unix系のOSになら、GromacsやGenIceを簡単にインストールできます。
+
+### 9-2-1 CentOS7/RedHat Linuxの場合
+
+(管理者権限で実行する必要があります。)
+```
+yum install gromacs python3
+pip install genice2
+```
+
+### 9-2-2 Ubuntu/Debian Linuxの場合
+
+(管理者権限で実行する必要があります。)
+```
+apt install gromacs python3
+pip install genice2
+```
+
+### 9-2-3 MacOSの場合
+
+```
+brew install gromacs python3
+pip install genice2
+```
+
+### 9-2-4 Windowsの場合
+
+(情報求む!)
+
+## 10. References
 
 [^1] Conde, M. M., Rovere, M. & Gallo, P. High precision determination of the melting points of water TIP4P/2005 and water TIP4P/Ice models by the direct coexistence technique. J. Chem. Phys. 147, 244506 (2017).
 
 [^2] Yagasaki, T., Matsumoto, M. & Tanaka, H. Spontaneous liquid-liquid phase separation of water. Phys. Rev. E Stat. Nonlin. Soft Matter Phys. 89, 020301 (2014).
+
+[^3] Yeyue Xiong, Parviz Seifpanahi Shabane, and Alexey V. Onufriev*, Melting Points of OPC and OPC3 Water Models, ACS Omega 39, 25087–25094 (2020).
+
+[^4] Espinosa, J. R., Sanz, E., Valeriani, C. & Vega, C. Homogeneous ice nucleation evaluated for several water models. J. Chem. Phys. 141, 18C529 (2014).
