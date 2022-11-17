@@ -9,8 +9,8 @@
 ### 0-0 この文書について
 
 * Terminalに入力すべき部分は、以下のように行の先頭が`$`となっています。この`$`を打ちこむ必要はありません。
-   ```
-   $ cd MeltingPoint
+   ```shell
+   cd MeltingPoint
    ```
 
 
@@ -164,7 +164,7 @@ $ gmx make_ndx -f ice.gro -o ice.ndx
 このファイルの末尾に、固定したい原子のインデックスを追加します。
 
 ```
-$ python zfix.py 0.0 2.7 < ice.gro >> ice.ndx
+$ python3 zfix.py 0.0 2.7 < ice.gro >> ice.ndx
 ```
 
 これにより、`ice.ndx`ファイルの末尾に、以下のような行が追加されます。
