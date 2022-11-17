@@ -305,17 +305,16 @@ gmx trjconv -f relaxed.trr -s relaxed.tpr -pbc whole -o relaxed.gro
 
 VSCodeを使い、ディレクトリ(フォルダー)を作ります。"New Folder"ボタン![New Folder](https://i.gyazo.com/b045bf92b0be46d81c754fbb2b6a6385.png) を押し、フォルダー名は`250K`としましょう。
 
-継続計算用の設定ファイル`continue.mdp`をVSCodeで開き、下に示すように温度設定を250 Kに修正して、`250K/`フォルダーに**別名で保存**します。ファイル名は`250K.mdp`としておきましょう。
+継続計算用の設定ファイル`continue.mdp`をVSCodeで開き、下に示すように温度設定を250 Kに修正して、`250K/`フォルダーに**別名で保存**します。ファイル名は`cont.mdp`としておきましょう。
 
 ```
 ...
 
-ref_t                    = 250.0      ; 系の温度。単位はK。
+ref_t                    = xxxx      ; 系の温度。単位はK。
 
 ...
 ```
 
-(250 K以外の温度にしたい場合は適宜読みかえて下さい。)
 
 `relax.mdp`と`continue.mdp`を比較して下さい。主な変更点は3点です。
 
@@ -334,7 +333,7 @@ cd 250K
 
 そして、`250K`フォルダー内で設定ファイルをコンパイルします。生成するファイル名は`cont.tpr`としました。その他のファイルは、一つ上のフォルダーにあるものを流用します。
 ```shell
-gmx grompp -maxwarn 1 -f 250K.mdp -p ../ice.top -o cont.tpr -c ../relaxed.tpr -t ../relaxed.cpt > cont.grompp.log
+gmx grompp -maxwarn 1 -f cont.mdp -p ../ice.top -o cont.tpr -c ../relaxed.tpr -t ../relaxed.cpt > cont.grompp.log
 ```
 
 実行!
@@ -351,7 +350,7 @@ gmx mdrun -deffnm cont -nt 8
 
 あとの解析で、まだシミュレーションの時間が足りないことがわかった場合は、次のようにして計算を延長することができます。
 
-まず、さきほど`gromppp`で生成した`.tpr`ファイルをもとに、実行時間を延長した新しい`.tpr`ファイルを作成します。 `-extend`オプションは追加計算する時間をps単位で指定します。
+まず、さきほど`gromppp`で生成した`.tpr`ファイルをもとに、実行時間を延長した新しい`.tpr`ファイルを作成します。 `-extend`オプションは追加計算する時間をps単位で指定します。2000 ps=1 nsだけ延長します。
 
 ```shell
 gmx convert-tpr -extend 2000 -s cont.tpr -o extended.tpr
