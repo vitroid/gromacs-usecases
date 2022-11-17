@@ -180,7 +180,7 @@ $ python zfix.py 0.0 2.7 < ice.gro >> ice.ndx
 
 ### 2-3 残り半分を融かす
 
-体積一定のままで、温度を500 Kまで上げます。普通なら沸騰しそうなものですが、膨張できないので、液体になるだけでとまります。このステップは、ただ構造を壊したいだけなので、長時間実行する必要はありません。
+体積一定のままで、温度を800 Kまで上げます。普通なら沸騰しそうなものですが、膨張できないので、液体になるだけでとまります。このステップは、ただ構造を壊したいだけなので、長時間実行する必要はありません。
 
 Gromacsでの分子動力学法の実行は、いつも3段階の手順になります。
 
@@ -195,27 +195,27 @@ Gromacsでの分子動力学法の実行は、いつも3段階の手順になり
 以下のコマンドでこれをコンパイルして、`.tpr`ファイルを作ります。
 
 ```
-$ gmx grompp -maxwarn 1 -f fix.mdp -p ice.top -o 00001.tpr -c ice.gro -n ice.ndx
+$ gmx grompp -maxwarn 1 -f fix.mdp -p ice.top -o fixed.tpr -c ice.gro -n ice.ndx
 ```
 
-これにより、Gromacsが読みこむファイル`00001.tpr`ができました。
+これにより、Gromacsが読みこむファイル`fixed.tpr`ができました。
 
 #### 2-3-2 実行
 
 2-3-1で作った00001.tprを読みこんでシミュレーションを実行します!
 
 ```
-$ gmx mdrun -deffnm 00001
+$ gmx mdrun -deffnm fixed
 ```
 
-これを実行すると、ほかにも`00001.`からはじまるたくさんのファイルが生成されます。(-deffnmは、たぶんdefault file nameの略で、明示的に指定しなかった出力ファイルには全部`00001.`をつけて下さい、と指示しています。)
+これを実行すると、ほかにも`fixed.`からはじまるたくさんのファイルが生成されます。(-deffnmは、たぶんdefault file nameの略で、明示的に指定しなかった出力ファイルには全部`fixed.`をつけて下さい、と指示しています。)
 
-* `00001.cpt`: チェックポイントファイル、続きの計算を行うのに必要なファイル。
-* `00001.edr`: 温度や圧力などの、統計情報が含まれるファイル。
-* `00001.trr`: 原子の座標や速度のデータ(トラジェクトリと呼ばれる)。
-* `00001.log`: その他の記録。実行時間などもこのファイルに記録される。
+* `fixed.cpt`: チェックポイントファイル、続きの計算を行うのに必要なファイル。
+* `fixed.edr`: 温度や圧力などの、統計情報が含まれるファイル。
+* `fixed.trr`: 原子の座標や速度のデータ(トラジェクトリと呼ばれる)。
+* `fixed.log`: その他の記録。実行時間などもこのファイルに記録される。
 
-`00001.log`の末尾には以下のように実行時間の情報が記録されます。
+`fixed.log`の末尾には以下のように実行時間の情報が記録されます。
 
 ```
 starting mdrun 'water TIP4P/Ice'
@@ -245,22 +245,22 @@ Performance:       87.185        0.275
 まず、分子動力学計算で得られた分子配置を、可視化しやすいように変換します。
 
 ```
-$ gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
+$ gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole -o fixed.gro
 ```
 
 入力を求められたら、0を押してリターンを押します。(System全体を可視化します)
 
-これで、`vis.gro`ファイルができました。かなり大きなファイルです。
+これで、`fixed.gro`ファイルができました。かなり大きなファイルです。
 
-1. 上のリンクから、VMDをダウンロードし、インストールします。(ユーザ登録を求められるかもしれません)
 
+
+1. VSCodeで、`fixed.gro`を右クリックしてダウンロードします。
 2. VMDを起動します。
-
-3. VSCodeで、`vis.gro`を右クリックしてダウンロードします。
-
-4. Downloadしたファイルを、VMDのウィンドウにドラッグアンドドロップします。
+3. Downloadしたファイルを、VMDのMainウィンドウにドラッグアンドドロップします。
 
 固定した部分は、分子はびくとも動いていないことがわかります。一方、固定していない部分は完全にランダムになっています。
+
+![Half melted](https://i.gyazo.com/b8aceaa130a2caaab557e6298562a8fd.png)
 
 #### 2-3-4 緩和
 
@@ -272,18 +272,22 @@ $ gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
 
 変更されているのは3点。
 
-1. 温度が500 Kから270 Kに下げられた。
+1. 温度が270 Kに下げられた。
 2. 体積一定から圧力一定に切り替えた。
 3. 分子の固定を外した。
 
 これを使って、またコンパイルし、実行します。
 
 ```
-$ gmx grompp -maxwarn 1 -f relax.mdp -p ice.top -o 00002.tpr -c 00001.tpr -t 00001.cpt  > 00002.grompp.log
-$ gmx mdrun -deffnm 00002
+$ gmx grompp -maxwarn 1 -f relax.mdp -p ice.top -o relaxed.tpr -c fixed.tpr -t fixed.cpt  > relaxed.grompp.log
+$ gmx mdrun -deffnm relaxed
 ```
 
-2-3-3と同じように、`vis.gro`を作って、VMDで観察して下さい。今度は、氷の部分の分子もぷるぷると振動していることがわかります。
+2-3-3と同じように、`relaxed.gro`を作って、VMDで観察して下さい。今度は、氷の部分の分子もぷるぷると振動していることがわかります。
+
+```
+$ gmx trjconv -f relaxed.trr -s relaxed.tpr -pbc whole -o relaxed.gro
+```
 
 ## 3. 目標とする温度で、シミュレーションを行う
 
@@ -318,15 +322,15 @@ $ cd 250K
 
 ### 3-2 シミュレーションの実行
 
-そして、`250K`フォルダー内で設定ファイルをコンパイルします。その他のファイルは、一つ上のフォルダーにあるものを流用します。
+そして、`250K`フォルダー内で設定ファイルをコンパイルします。生成するファイル名は`cont.tpr`としました。その他のファイルは、一つ上のフォルダーにあるものを流用します。
 ```
-$ gmx grompp -maxwarn 1 -f 250K.mdp -p ../ice.top -o 00001.tpr -c ../00002.tpr -t ../00002.cpt > 00001.grompp.log
+$ gmx grompp -maxwarn 1 -f 250K.mdp -p ../ice.top -o cont.tpr -c ../relaxed.tpr -t ../relaxed.cpt > cont.grompp.log
 ```
 
 実行!
 
 ```
-$ gmx mdrun -deffnm 00001
+$ gmx mdrun -deffnm cont
 ```
 
 さっきの10倍の時間がかかるはずです。コーヒーでも飲んで、気長に待ちましょう。
@@ -335,16 +339,16 @@ $ gmx mdrun -deffnm 00001
 
 あとの解析で、まだシミュレーションの時間が足りないことがわかった場合は、次のようにして計算を延長することができます。
 
-まず、さきほど`gromppp`で生成した`.tpr`ファイルをもとに、実行時間を延長した新しい`.tpr`ファイルを作成します。 `-extend`オプションは追加計算する時間をps単位で指定します。元1 ns+追加2 nsなので、ファイル名は3nsとしました。
+まず、さきほど`gromppp`で生成した`.tpr`ファイルをもとに、実行時間を延長した新しい`.tpr`ファイルを作成します。 `-extend`オプションは追加計算する時間をps単位で指定します。
 
 ```
-$ gmx convert-tpr -extend 2000 -s 00001.tpr -o 3ns.tpr
+$ gmx convert-tpr -extend 2000 -s cont.tpr -o extended.tpr
 ```
 
 そして実行! (継続計算の場合は、オプションをいろいろ指定する必要があるようです。)
 
 ```
-$ gmx mdrun -deffnm 00002 -cpi 00001.cpt -s 3ns.tpr -noappend
+$ gmx mdrun -deffnm extended -cpi cont.cpt -s extended.tpr -noappend
 ```
 
 こんどは食事ができるぐらい時間がかかるかもしれません。
@@ -355,7 +359,7 @@ $ gmx mdrun -deffnm 00002 -cpi 00001.cpt -s 3ns.tpr -noappend
 まず、トラジェクトリデータ`.trr`を、人間が読める`.gro`形式に変換します。
 
 ```
-$ gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
+$ gmx trjconv -f cont.trr -s cont.tpr -pbc whole -o cont.gro
 ```
 
 これをDownloadし、VMDで開きます。
@@ -382,13 +386,13 @@ $ gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
 この`.edr`ファイルの内容を、人間が読みやすい形に変換するのが、`gmx dump`コマンドです。
 
 ```
-$ gmx dump -e 00001.edr
+$ gmx dump -e cont.edr
 ```
 
 ですが、こうして変換されたファイルも、あとのデータ処理にはあまり便利ではありませんそこで、これをさらに自作スクリプト`undump.py`を使って、表形式に変換します。
 
 ```
-$ gmx dump -e 00001.edr | python undump.pu > 00001.txt
+$ gmx dump -e cont.edr | python undump.pu > cont.txt
 ```
 
 このファイルをダウンロードし、てきとうなツール(Excel?)を使って開いて、時間とポテンシャルエネルギーの関係をプロットして下さい。
