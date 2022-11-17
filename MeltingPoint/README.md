@@ -6,6 +6,7 @@
 
 クラウド上で計算することにします。
 
+### 0-1 クラウドを利用するための準備
 1. クラウド(Amazon EC2)にログインするためのアカウントをこちらから配布します。
 2. VSCodeのウィンドウ左のアイコン![Extension](https://i.gyazo.com/fd1a561033b9f2fbc2245681c70ca67b.png)から、以下の拡張を追加して下さい。
   * Remote SSH
@@ -16,6 +17,11 @@
    ```
    cd MeltingPoint
    ```
+
+### 0-2 手許のコンピュータの準備
+
+1. データをプロットするツールを利用します。Igor Proやgnuplotやngraphを使える人はそれを使って下さい。いずれもない場合はExcelやNumbers、それもない場合はGoogle Spreadsheetなどでも代用できます。ただし、個々のプログラムの使い方はここでは解説しません。
+2. シミュレーション結果を可視化するツール[VMD](https://www.ks.uiuc.edu/Research/vmd/alpha/)をあらかじめインストールしておいて下さい。
 
 ## 1. 水分子モデルを選ぶ
 
