@@ -9,3 +9,5 @@ roomy.gro
 *.xtc
 relaxed*
 fixed*
+cont.*
+cont_prev.*
