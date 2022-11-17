@@ -2,6 +2,21 @@
 
 氷の結晶成長や融解過程をその場観察するとともに、氷の融点を計算機シミュレーションで推定する手順を解説します。
 
+## 0. 環境設定
+
+クラウド上で計算することにします。
+
+1. クラウド(Amazon EC2)にログインするためのアカウントをこちらから配布します。
+2. VSCodeのウィンドウ左のアイコン![Extension](https://i.gyazo.com/fd1a561033b9f2fbc2245681c70ca67b.png)から、以下の拡張を追加して下さい。
+  * Remote SSH
+3. 所定のIPアドレスに接続します。VSCodeのウィンドウ左下のボタン![Remote](https://i.gyazo.com/bf32d7cb4356d4465343a3caebc7b996.png)を押して下さい。
+4. クラウドのコンピュータにプログラムソースを準備します。VSCodeのウィンドウ中央の `Clone Git Repository...`を押し、`Clone from GitHub`と表示されたらリターンを押し、`vitroid/gromacs-usecases`を指定して下さい。保存先を聞かれたらリターンを押します。2回目のログイン以降はこの作業は不要です。
+5. ソースを保存したフォルダーを開きます。
+6. VSCodeのターミナルを開きます。メニューのTerminal→New Terminalでターミナルを開き、以下のコマンドで作業ディレクトリを`MeltingPoint`に切り替えます。
+   ```
+   cd MeltingPoint
+   ```
+
 ## 1. 水分子モデルを選ぶ
 
 計算機シミュレーションに利用される水分子モデルには非常に多数の種類があります。そのうちのほとんどは、常温の液体の水や水溶液の性質が再現されるように設計されてきたため、結晶化相転移を観察するのに適していません。
@@ -60,7 +75,7 @@ HW     1.00800       0.000       A   0.00000E+00   0.00000E+00
 
 そこで、融点を推定したい場合には、あらかじめ氷と水が共存する状態を準備します。こうすれば、設定した温度が融点よりも高ければ、氷は徐々に融けていきますし、低ければ氷の成長が見られます。
 
-さらに、氷と水の界面が平坦であることも重要な条件です。もし、2つの相の間の界面が湾曲している場合、そこにはLaplace圧という圧力が生まれます。要するに、こちらが圧力を指示しても、界面が曲がることで圧力が変わってしまい、指示した圧力のもとでの融点がきちんと推定できない、ということになります。
+<!-- さらに、氷と水の界面が平坦であることも重要な条件です。もし、2つの相の間の界面が湾曲している場合、そこにはLaplace圧という圧力が生まれます。要するに、こちらが圧力を指示しても、界面が曲がることで圧力が変わってしまい、指示した圧力のもとでの融点がきちんと推定できない、ということになります。 -->
 
 初期配置は、次の手順で準備します。
 
@@ -405,24 +420,24 @@ Amazon EC2の無料枠でも、そこそこの計算はできます。
 
 クラウドを使わなくても、Unix系のOSになら、GromacsやGenIceを簡単にインストールできます。
 
-#### 9-2-1 CentOS7/RedHat Linuxの場合
+
+#### 9-2-1 Ubuntu/Debian Linuxの場合
 
 (管理者権限で実行する必要があります。)
 ```
-yum install gromacs python3
+apt update
+apt install gromacs python3 python3-pip
+pip install numpy
 pip install genice2
 ```
 
-#### 9-2-2 Ubuntu/Debian Linuxの場合
+#### 9-2-2 Redhat/Amazon Linux/CentOS7の場合
 
-(管理者権限で実行する必要があります。)
-```
-apt install gromacs python3
-pip install genice2
-```
+EC2のAmazon Linux/RedHat Linuxではgromacsパッケージが見付かりませんでした。[RPM](https://rpmfind.net/linux/rpm2html/search.php?query=gromacs)から必要なものを個別にインストールする必要があるようです。
 
 #### 9-2-3 MacOSの場合
 
+Homebrewをセットアップしておきましょう。
 ```
 brew install gromacs python3
 pip install genice2
