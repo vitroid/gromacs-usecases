@@ -7,10 +7,12 @@ integrator               = md
 ; MD steps and output control
 dt                       = 0.002      ; MD計算のΔt (ps)。
 
-; 270 K 未満では、以下の3つを10倍にする。
-nsteps                   = 500000     ; MDのステップ数。
-nstxout                  = 500        ; 座標がnstxoutステップに一度出力される。
-nstlog                   = 500        ; logに情報が書き込まれる頻度。
+; 280 K 以上; 3 ns
+nsteps                   = 1500000     ; MDのステップ数。
+nstxout                  = 1500        ; 座標がnstxoutステップに一度出力される。
+nstlog                   = 1500        ; logに情報が書き込まれる頻度。
+
+; 280 K 未満; 10 ns
 ; nsteps                   = 5000000     ; MDのステップ数。
 ; nstxout                  = 5000        ; 座標がnstxoutステップに一度出力される。
 ; nstlog                   = 5000        ; logに情報が書き込まれる頻度。
@@ -38,16 +40,16 @@ rvdw                     = 0.9        ; van der Waals相互作用(Lennard-Jones)
 DispCorr                  = EnerPres
 
 ; Temperature coupling
-tcoupl                   = nose-hoover ; 温度制御の方法。初期配置から走らせる場合は、v-rescaleで強制的に温度をおちつかせる。
+tcoupl                   = v-scaling  ; 温度制御の方法。
 nh-chain-length          = 1          ; 5行目 integrater = md のときは1しかないので、気にしなくてよい。
 tc_grps                  = System     ; System全体を対象にする
 tau_t                    = 0.6        ; 温度調節の時定数。
 ref_t                    = xxxx       ; 系の温度。単位はK。
 
 ; Pressure coupling
-Pcoupl                   = Parrinello-Rahman ; 圧力制御しない = 体積一定。
+Pcoupl                   = Berendsen   ; 圧力制御。不正確だが破綻しない手法を選んでいる。
 pcoupltype               = semiisotropic ;xy方向は等方的に、z方向は別に伸縮する
-tau_p                    = 3.0        ; 圧力調節の時定数。
+tau_p                    = 32.0        ; 圧力調節の時定数。
 compressibility          = 4.5e-5 4.5e-5
 ref_p                    = 1.0    1.0    ; 系の圧力。単位はbar。Pcoupl = no の場合は無効。
 

@@ -39,7 +39,7 @@ tau_t                    = 0.6        ; 温度調節の時定数。
 ref_t                    = 270.0      ; 系の温度。単位はK。
 
 ; Pressure coupling
-Pcoupl                   = Berendsen  ; 圧力制御しない = 体積一定。
+Pcoupl                   = Berendsen  ; 圧力制御。
 pcoupltype               = semiisotropic ;xy方向は等方的に、z方向は別に伸縮する
 tau_p                    = 1.0        ; 圧力調節の時定数。
 compressibility          = 4.5e-5 4.5e-5
