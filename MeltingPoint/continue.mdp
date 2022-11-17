@@ -6,9 +6,9 @@ integrator               = md
 
 ; MD steps and output control
 dt                       = 0.002      ; MD計算のΔt (ps)。
-nsteps                   = 500000      ; MDのステップ数。
+nsteps                   = 500000     ; MDのステップ数。
 nstxout                  = 500        ; 座標がnstxoutステップに一度出力される。
-nstvout                  = 5000       ; 速度がnstvout ステップに一度出力される。
+nstvout                  = 500000     ; 速度がnstvoutステップに一度出力される。
 nstlog                   = 500        ; logに情報が書き込まれる頻度。
 nstenergy                = 500        ; エネルギーがnstenergyステップに一度出力される。
 nstxtcout                = 0
