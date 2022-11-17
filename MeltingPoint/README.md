@@ -6,6 +6,14 @@
 
 クラウド上で計算することにします。
 
+### 0-0 この文書について
+
+* Terminalに入力すべき部分は、以下のように行の先頭が`$`となっています。この`$`を打ちこむ必要はありません。
+   ```
+   $ cd MeltingPoint
+   ```
+
+
 ### 0-1 クラウドを利用するための準備
 1. クラウド(Amazon EC2)にログインするためのアカウントをこちらから配布します。
 2. VSCodeのウィンドウ左のアイコン![Extension](https://i.gyazo.com/fd1a561033b9f2fbc2245681c70ca67b.png)から、以下の拡張を追加して下さい。
@@ -15,7 +23,7 @@
 5. ソースを保存したフォルダーを開きます。
 6. VSCodeのターミナルを開きます。メニューのTerminal→New Terminalでターミナルを開き、以下のコマンドで作業ディレクトリを`MeltingPoint`に切り替えます。
    ```
-   cd MeltingPoint
+   $ cd MeltingPoint
    ```
 
 ### 0-2 手許のコンピュータの準備
@@ -77,7 +85,7 @@ HW     1.00800       0.000       A   0.00000E+00   0.00000E+00
 
 融点を推定する際に、例えば初期配置として、すべての分子が氷の結晶構造に並ぶ配置を選ぶと、融点より10 Kや20 K温度を上げても氷は融けません(過熱現象)。これは、融けはじめるきっかけとなる、構造の崩壊が偶然起こるまでの時間がかかりすぎるためです。もちろん、無限に近い計算時間があれば、融点より上では融けはじめるはずですが、そんなに長い計算は今のコンピュータでは不可能です。
 
-同じように、はじめに完全に液体の状態からはじめると、温度をいくらさげても自然に結晶が生じることはまずありません。(過冷却現象)
+同じように、はじめに完全に液体の状態からはじめると、温度をいくらさげても自然に結晶が生じるまでには非常に時間がかかります。(過冷却現象)
 
 そこで、融点を推定したい場合には、あらかじめ氷と水が共存する状態を準備します。こうすれば、設定した温度が融点よりも高ければ、氷は徐々に融けていきますし、低ければ氷の成長が見られます。
 
@@ -100,12 +108,12 @@ HW     1.00800       0.000       A   0.00000E+00   0.00000E+00
 
 ### 2-1 氷の結晶を作る
 
-[GenIce](https://github.com/vitroid/GenIce)は、さまざまな氷の結晶構造を生成するツールです。これを用い、氷Ih(六方晶氷I、もっとも身近に存在する氷)を生成します。
+[GenIce](https://github.com/vitroid/GenIce)は、さまざまな氷の結晶構造を生成するツールです。これを用い、氷Ih(こおりいちえいち、六方晶氷I、もっとも身近に存在する氷)を生成します。
 
 ターミナルで以下のように入力します。
 
 ```
-genice2 1h -r 3 3 6 -w tip4p > ice.gro
+$ genice2 1h -r 3 3 6 -w tip4p > ice.gro
 ```
 
 `-r`オプションで、単位胞をx,y,z方向にいくつならべるかを指定しています。また、`-w`で水分子モデルの種類を指定します。
@@ -125,6 +133,11 @@ genice2 1h -r 3 3 6 -w tip4p > ice.gro
 
 x, y, z軸方向の寸法がそれぞれ2.3 nm, 2.2 nm, 5.4 nmで、z方向に長いセルです。
 
+とりあえず、この構造を可視化してみましょう。VSCodeのウィンドウ左側のファイルブラウザで`ice.gro`を右クリックし、ダウンロードします。そのファイルをVMDで開きます。
+
+![ice Ih](https://i.gyazo.com/d30d131bc64aaf09ab4a7e356bf0b299.png)
+
+
 ### 2-2 分子を固定する
 
 `Gromacs`には、原子の番号を指定して、その原子を動けなくする機能があります。手で指定するのはたいへんなので、pythonスクリプトをつかって、Z座標が2.7 nm未満の原子だけを固定します。
@@ -134,7 +147,7 @@ x, y, z軸方向の寸法がそれぞれ2.3 nm, 2.2 nm, 5.4 nmで、z方向に�
 Gromacsのmake_ndxコマンドは、原子を種類ごとに分類した`.ndx`ファイルを生成します。
 
 ```
-gmx make_ndx -f ice.gro -o ice.ndx
+$ gmx make_ndx -f ice.gro -o ice.ndx
 ```
 を実行し、promptが表示されたら、qを押して終了します。ice.ndxには以下のような内容が書かれます。
 
@@ -151,7 +164,7 @@ gmx make_ndx -f ice.gro -o ice.ndx
 このファイルの末尾に、固定したい原子のインデックスを追加します。
 
 ```
-python zfix.py 0.0 2.7 < ice.gro >> ice.ndx
+$ python zfix.py 0.0 2.7 < ice.gro >> ice.ndx
 ```
 
 これにより、`ice.ndx`ファイルの末尾に、以下のような行が追加されます。
@@ -182,7 +195,7 @@ Gromacsでの分子動力学法の実行は、いつも3段階の手順になり
 以下のコマンドでこれをコンパイルして、`.tpr`ファイルを作ります。
 
 ```
-gmx grompp -maxwarn 1 -f fix.mdp -p ice.top -o 00001.tpr -c ice.gro -n ice.ndx
+$ gmx grompp -maxwarn 1 -f fix.mdp -p ice.top -o 00001.tpr -c ice.gro -n ice.ndx
 ```
 
 これにより、Gromacsが読みこむファイル`00001.tpr`ができました。
@@ -192,7 +205,7 @@ gmx grompp -maxwarn 1 -f fix.mdp -p ice.top -o 00001.tpr -c ice.gro -n ice.ndx
 2-3-1で作った00001.tprを読みこんでシミュレーションを実行します!
 
 ```
-gmx mdrun -deffnm 00001
+$ gmx mdrun -deffnm 00001
 ```
 
 これを実行すると、ほかにも`00001.`からはじまるたくさんのファイルが生成されます。(-deffnmは、たぶんdefault file nameの略で、明示的に指定しなかった出力ファイルには全部`00001.`をつけて下さい、と指示しています。)
@@ -232,7 +245,7 @@ Performance:       87.185        0.275
 まず、分子動力学計算で得られた分子配置を、可視化しやすいように変換します。
 
 ```
-gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
+$ gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
 ```
 
 入力を求められたら、0を押してリターンを押します。(System全体を可視化します)
@@ -266,8 +279,8 @@ gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
 これを使って、またコンパイルし、実行します。
 
 ```
-gmx grompp -maxwarn 1 -f relax.mdp -p ice.top -o 00002.tpr -c 00001.tpr -t 00001.cpt  > 00002.grompp.log
-gmx mdrun -deffnm 00002
+$ gmx grompp -maxwarn 1 -f relax.mdp -p ice.top -o 00002.tpr -c 00001.tpr -t 00001.cpt  > 00002.grompp.log
+$ gmx mdrun -deffnm 00002
 ```
 
 2-3-3と同じように、`vis.gro`を作って、VMDで観察して下さい。今度は、氷の部分の分子もぷるぷると振動していることがわかります。
@@ -286,7 +299,7 @@ gmx mdrun -deffnm 00002
 
 初期配置を作ったフォルダーとは別のところで作業したほうが良いでしょう。
 
-VSCodeを使い、ディレクトリ(フォルダー)を作ります。"New Folder"ボタン![New Foler](https://i.gyazo.com/b045bf92b0be46d81c754fbb2b6a6385.png) を押し、フォルダー名は`250K`としましょう。
+VSCodeを使い、ディレクトリ(フォルダー)を作ります。"New Folder"ボタン![New Folder](https://i.gyazo.com/b045bf92b0be46d81c754fbb2b6a6385.png) を押し、フォルダー名は`250K`としましょう。
 
 継続計算用の設定ファイル`continue.mdp`をVSCodeで開き、温度設定を250 Kに修正して、`250K/`フォルダーに**別名で保存**します。ファイル名は`250K.mdp`としておきましょう。
 
@@ -299,7 +312,7 @@ VSCodeを使い、ディレクトリ(フォルダー)を作ります。"New Fold
 ターミナルでの作業も、`250K/`フォルダーに移動します。
 
 ```
-cd 250K
+$ cd 250K
 ```
 
 
@@ -307,13 +320,13 @@ cd 250K
 
 そして、`250K`フォルダー内で設定ファイルをコンパイルします。その他のファイルは、一つ上のフォルダーにあるものを流用します。
 ```
-gmx grompp -maxwarn 1 -f 250K.mdp -p ../ice.top -o 00001.tpr -c ../00002.tpr -t ../00002.cpt > 00001.grompp.log
+$ gmx grompp -maxwarn 1 -f 250K.mdp -p ../ice.top -o 00001.tpr -c ../00002.tpr -t ../00002.cpt > 00001.grompp.log
 ```
 
 実行!
 
 ```
-gmx mdrun -deffnm 00001
+$ gmx mdrun -deffnm 00001
 ```
 
 さっきの10倍の時間がかかるはずです。コーヒーでも飲んで、気長に待ちましょう。
@@ -325,13 +338,13 @@ gmx mdrun -deffnm 00001
 まず、さきほど`gromppp`で生成した`.tpr`ファイルをもとに、実行時間を延長した新しい`.tpr`ファイルを作成します。 `-extend`オプションは追加計算する時間をps単位で指定します。元1 ns+追加2 nsなので、ファイル名は3nsとしました。
 
 ```
-gmx convert-tpr -extend 2000 -s 00001.tpr -o 3ns.tpr
+$ gmx convert-tpr -extend 2000 -s 00001.tpr -o 3ns.tpr
 ```
 
-そして実行!
+そして実行! (継続計算の場合は、オプションをいろいろ指定する必要があるようです。)
 
 ```
-gmx mdrun -deffnm 00002 -cpi 00001.cpt -s 3ns.tpr -noappend
+$ gmx mdrun -deffnm 00002 -cpi 00001.cpt -s 3ns.tpr -noappend
 ```
 
 こんどは食事ができるぐらい時間がかかるかもしれません。
@@ -342,7 +355,7 @@ gmx mdrun -deffnm 00002 -cpi 00001.cpt -s 3ns.tpr -noappend
 まず、トラジェクトリデータ`.trr`を、人間が読める`.gro`形式に変換します。
 
 ```
-gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
+$ gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
 ```
 
 これをDownloadし、VMDで開きます。
@@ -369,13 +382,13 @@ gmx trjconv -f 00001.trr -s 00001.tpr -pbc whole -o vis.gro
 この`.edr`ファイルの内容を、人間が読みやすい形に変換するのが、`gmx dump`コマンドです。
 
 ```
-gmx dump -e 00001.edr
+$ gmx dump -e 00001.edr
 ```
 
 ですが、こうして変換されたファイルも、あとのデータ処理にはあまり便利ではありませんそこで、これをさらに自作スクリプト`undump.py`を使って、表形式に変換します。
 
 ```
-gmx dump -e 00001.edr | python undump.pu > 00001.txt
+$ gmx dump -e 00001.edr | python undump.pu > 00001.txt
 ```
 
 このファイルをダウンロードし、てきとうなツール(Excel?)を使って開いて、時間とポテンシャルエネルギーの関係をプロットして下さい。
@@ -430,11 +443,11 @@ Amazon EC2の無料枠でも、そこそこの計算はできます。
 #### 9-2-1 Ubuntu/Debian Linuxの場合
 
 (管理者権限で実行する必要があります。)
-```
-apt update
-apt install gromacs python3 python3-pip
-pip install numpy
-pip install genice2
+```sh
+$ apt update
+$ apt install gromacs python3 python3-pip
+$ pip install numpy
+$ pip install genice2
 ```
 
 #### 9-2-2 Redhat/Amazon Linux/CentOS7の場合
@@ -444,16 +457,18 @@ EC2のAmazon Linux/RedHat Linuxではgromacsパッケージが見付かりませ
 #### 9-2-3 MacOSの場合
 
 Homebrewをセットアップしておきましょう。
+
+HomeBrewでは、管理者権限なしにインストールできます。
 ```
-brew install gromacs python3
-pip install genice2
+$ brew install gromacs python3
+$ pip install genice2
 ```
 
 #### 9-2-4 Windowsの場合
 
 (情報求む!)
 
-## 10. References
+## References
 
 [^1] Conde, M. M., Rovere, M. & Gallo, P. High precision determination of the melting points of water TIP4P/2005 and water TIP4P/Ice models by the direct coexistence technique. J. Chem. Phys. 147, 244506 (2017).
 
