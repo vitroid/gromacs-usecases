@@ -8,11 +8,11 @@
 
 ### 0-0 この文書について
 
-* Terminalに入力すべき部分は、以下のように行の先頭が`$`となっています。この`$`を打ちこむ必要はありません。
-   ```shell
-   cd MeltingPoint
-   ```
+以下のように表示されている部分は、特に断りがない限り、Terminalに打ちこむコマンドを表しています。
 
+```shell
+cd MeltingPoint
+```
 
 ### 0-1 クラウドを利用するための準備
 1. クラウド(Amazon EC2)にログインするためのアカウントをこちらから配布します。
@@ -22,8 +22,8 @@
 4. クラウドのコンピュータにプログラムソースを準備します。VSCodeのウィンドウ中央の `Clone Git Repository...`を押し、`Clone from GitHub`と表示されたらリターンを押し、`vitroid/gromacs-usecases`を指定して下さい。保存先を聞かれたらリターンを押します。2回目のログイン以降はこの作業は不要です。
 5. ソースを保存したフォルダーを開きます。
 6. VSCodeのターミナルを開きます。メニューのTerminal→New Terminalでターミナルを開き、以下のコマンドで作業ディレクトリを`MeltingPoint`に切り替えます。
-   ```
-   $ cd MeltingPoint
+   ```shell
+   cd MeltingPoint
    ```
 
 ### 0-2 手許のコンピュータの準備
@@ -112,8 +112,8 @@ HW     1.00800       0.000       A   0.00000E+00   0.00000E+00
 
 ターミナルで以下のように入力します。
 
-```
-$ genice2 1h -r 3 3 6 -w tip4p > ice.gro
+```shell
+genice2 1h -r 3 3 6 -w tip4p > ice.gro
 ```
 
 `-r`オプションで、単位胞をx,y,z方向にいくつならべるかを指定しています。また、`-w`で水分子モデルの種類を指定します。
@@ -146,8 +146,8 @@ x, y, z軸方向の寸法がそれぞれ2.3 nm, 2.2 nm, 5.4 nmで、z方向に�
 
 Gromacsのmake_ndxコマンドは、原子を種類ごとに分類した`.ndx`ファイルを生成します。
 
-```
-$ gmx make_ndx -f ice.gro -o ice.ndx
+```shell
+gmx make_ndx -f ice.gro -o ice.ndx
 ```
 を実行し、promptが表示されたら、qを押して終了します。ice.ndxには以下のような内容が書かれます。
 
@@ -163,8 +163,8 @@ $ gmx make_ndx -f ice.gro -o ice.ndx
 
 このファイルの末尾に、固定したい原子のインデックスを追加します。
 
-```
-$ python3 zfix.py 0.0 2.7 < ice.gro >> ice.ndx
+```shell
+python3 zfix.py 0.0 2.7 < ice.gro >> ice.ndx
 ```
 
 これにより、`ice.ndx`ファイルの末尾に、以下のような行が追加されます。
@@ -194,8 +194,8 @@ Gromacsでの分子動力学法の実行は、いつも3段階の手順になり
 
 以下のコマンドでこれをコンパイルして、`.tpr`ファイルを作ります。
 
-```
-$ gmx grompp -maxwarn 1 -f fix.mdp -p ice.top -o fixed.tpr -c ice.gro -n ice.ndx
+```shell
+gmx grompp -maxwarn 1 -f fix.mdp -p ice.top -o fixed.tpr -c ice.gro -n ice.ndx
 ```
 
 これにより、Gromacsが読みこむファイル`fixed.tpr`ができました。
@@ -204,8 +204,8 @@ $ gmx grompp -maxwarn 1 -f fix.mdp -p ice.top -o fixed.tpr -c ice.gro -n ice.ndx
 
 2-3-1で作った00001.tprを読みこんでシミュレーションを実行します!
 
-```
-$ gmx mdrun -deffnm fixed
+```shell
+gmx mdrun -deffnm fixed
 ```
 
 これを実行すると、ほかにも`fixed.`からはじまるたくさんのファイルが生成されます。(-deffnmは、たぶんdefault file nameの略で、明示的に指定しなかった出力ファイルには全部`fixed.`をつけて下さい、と指示しています。)
@@ -244,8 +244,8 @@ Performance:       87.185        0.275
 
 まず、分子動力学計算で得られた分子配置を、可視化しやすいように変換します。
 
-```
-$ gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole -o fixed.gro
+```shell
+gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole -o fixed.gro
 ```
 
 入力を求められたら、0を押してリターンを押します。(System全体を可視化します)
@@ -278,15 +278,15 @@ $ gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole -o fixed.gro
 
 これを使って、またコンパイルし、実行します。
 
-```
-$ gmx grompp -maxwarn 1 -f relax.mdp -p ice.top -o relaxed.tpr -c fixed.tpr -t fixed.cpt  > relaxed.grompp.log
-$ gmx mdrun -deffnm relaxed
+```shell
+gmx grompp -maxwarn 1 -f relax.mdp -p ice.top -o relaxed.tpr -c fixed.tpr -t fixed.cpt  > relaxed.grompp.log
+gmx mdrun -deffnm relaxed
 ```
 
 2-3-3と同じように、`relaxed.gro`を作って、VMDで観察して下さい。今度は、氷の部分の分子もぷるぷると振動していることがわかります。
 
-```
-$ gmx trjconv -f relaxed.trr -s relaxed.tpr -pbc whole -o relaxed.gro
+```shell
+gmx trjconv -f relaxed.trr -s relaxed.tpr -pbc whole -o relaxed.gro
 ```
 
 ## 3. 目標とする温度で、シミュレーションを行う
@@ -315,22 +315,22 @@ VSCodeを使い、ディレクトリ(フォルダー)を作ります。"New Fold
 
 ターミナルでの作業も、`250K/`フォルダーに移動します。
 
-```
-$ cd 250K
+```shell
+cd 250K
 ```
 
 
 ### 3-2 シミュレーションの実行
 
 そして、`250K`フォルダー内で設定ファイルをコンパイルします。生成するファイル名は`cont.tpr`としました。その他のファイルは、一つ上のフォルダーにあるものを流用します。
-```
-$ gmx grompp -maxwarn 1 -f 250K.mdp -p ../ice.top -o cont.tpr -c ../relaxed.tpr -t ../relaxed.cpt > cont.grompp.log
+```shell
+gmx grompp -maxwarn 1 -f 250K.mdp -p ../ice.top -o cont.tpr -c ../relaxed.tpr -t ../relaxed.cpt > cont.grompp.log
 ```
 
 実行!
 
-```
-$ gmx mdrun -deffnm cont
+```shell
+gmx mdrun -deffnm cont
 ```
 
 さっきの10倍の時間がかかるはずです。コーヒーでも飲んで、気長に待ちましょう。
@@ -341,14 +341,14 @@ $ gmx mdrun -deffnm cont
 
 まず、さきほど`gromppp`で生成した`.tpr`ファイルをもとに、実行時間を延長した新しい`.tpr`ファイルを作成します。 `-extend`オプションは追加計算する時間をps単位で指定します。
 
-```
-$ gmx convert-tpr -extend 2000 -s cont.tpr -o extended.tpr
+```shell
+gmx convert-tpr -extend 2000 -s cont.tpr -o extended.tpr
 ```
 
 そして実行! (継続計算の場合は、オプションをいろいろ指定する必要があるようです。)
 
-```
-$ gmx mdrun -deffnm extended -cpi cont.cpt -s extended.tpr -noappend
+```shell
+gmx mdrun -deffnm extended -cpi cont.cpt -s extended.tpr -noappend
 ```
 
 こんどは食事ができるぐらい時間がかかるかもしれません。
@@ -358,8 +358,8 @@ $ gmx mdrun -deffnm extended -cpi cont.cpt -s extended.tpr -noappend
 
 まず、トラジェクトリデータ`.trr`を、人間が読める`.gro`形式に変換します。
 
-```
-$ gmx trjconv -f cont.trr -s cont.tpr -pbc whole -o cont.gro
+```shell
+gmx trjconv -f cont.trr -s cont.tpr -pbc whole -o cont.gro
 ```
 
 これをDownloadし、VMDで開きます。
@@ -385,14 +385,14 @@ $ gmx trjconv -f cont.trr -s cont.tpr -pbc whole -o cont.gro
 
 この`.edr`ファイルの内容を、人間が読みやすい形に変換するのが、`gmx dump`コマンドです。
 
-```
-$ gmx dump -e cont.edr
+```shell
+gmx dump -e cont.edr
 ```
 
 ですが、こうして変換されたファイルも、あとのデータ処理にはあまり便利ではありませんそこで、これをさらに自作スクリプト`undump.py`を使って、表形式に変換します。
 
-```
-$ gmx dump -e cont.edr | python undump.pu > cont.txt
+```shell
+gmx dump -e cont.edr | python undump.pu > cont.txt
 ```
 
 このファイルをダウンロードし、てきとうなツール(Excel?)を使って開いて、時間とポテンシャルエネルギーの関係をプロットして下さい。
@@ -447,11 +447,11 @@ Amazon EC2の無料枠でも、そこそこの計算はできます。
 #### 9-2-1 Ubuntu/Debian Linuxの場合
 
 (管理者権限で実行する必要があります。)
-```sh
-$ apt update
-$ apt install gromacs python3 python3-pip
-$ pip install numpy
-$ pip install genice2
+```shell
+apt update
+apt install gromacs python3 python3-pip
+pip install numpy
+pip install genice2
 ```
 
 #### 9-2-2 Redhat/Amazon Linux/CentOS7の場合
@@ -463,9 +463,9 @@ EC2のAmazon Linux/RedHat Linuxではgromacsパッケージが見付かりませ
 Homebrewをセットアップしておきましょう。
 
 HomeBrewでは、管理者権限なしにインストールできます。
-```
-$ brew install gromacs python3
-$ pip install genice2
+```shell
+brew install gromacs python3
+pip install genice2
 ```
 
 #### 9-2-4 Windowsの場合
