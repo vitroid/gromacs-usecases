@@ -18,7 +18,7 @@ cd MeltingPoint
 1. クラウド(Amazon EC2)にログインするためのアカウントをこちらから配布します。
 2. VSCodeのウィンドウ左のアイコン![Extension](https://i.gyazo.com/fd1a561033b9f2fbc2245681c70ca67b.png)から、以下の拡張を追加して下さい。
   * Remote SSH
-3. 所定のIPアドレスに接続します。VSCodeのウィンドウ左下のボタン![Remote](https://i.gyazo.com/bf32d7cb4356d4465343a3caebc7b996.png)を押して下さい。
+3. 所定のIPアドレスに接続します。VSCodeのウィンドウ左下のボタン![Remote](https://i.gyazo.com/bf32d7cb4356d4465343a3caebc7b996.png)を押して下さい。(いろいろ聞いてきます。)
 4. クラウドのコンピュータにプログラムソースを準備します。VSCodeのウィンドウ中央の `Clone Git Repository...`を押し、`Clone from GitHub`と表示されたらリターンを押し、`vitroid/gromacs-usecases`を指定して下さい。保存先を聞かれたらリターンを押します。2回目のログイン以降はこの作業は不要です。
 5. ソースを保存したフォルダーの、`MeltingPoint`フォルダーを開きます。
 <!-- 6. VSCodeのターミナルを開きます。メニューのTerminal→New Terminalでターミナルを開き、以下のコマンドで作業ディレクトリを`MeltingPoint`に切り替えます。
@@ -195,7 +195,7 @@ Gromacsでの分子動力学法の実行は、いつも3段階の手順になり
 以下のコマンドでこれをコンパイルして、`.tpr`ファイルを作ります。
 
 ```shell
-gmx grompp -maxwarn 1 -f fix.mdp -p ice.top -o fixed.tpr -c ice.gro -n ice.ndx
+gmx grompp -maxwarn 1 -f fix.mdp -p ice.top -c ice.gro -n ice.ndx   -o fixed.tpr
 ```
 
 これにより、Gromacsが読みこむファイル`fixed.tpr`ができました。
@@ -231,7 +231,7 @@ Performance:       87.185        0.275
 
 これはMacBook Airで実行したケースですが、
 
-* CPUを800%使っている(8 core全部を使用している)
+* CPUを800%使っている(8 coreを使用している)
 * 50000ステップ実行した。1ステップが0.002 psなので、100 psのシミュレーションが行われた。
 * かかった時間は100秒。このペースだと一日で90 ns分の計算ができる。
 
@@ -245,7 +245,7 @@ Performance:       87.185        0.275
 まず、分子動力学計算で得られた分子配置を、可視化しやすいように変換します。
 
 ```shell
-gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole -o fixed.gro
+gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole   -o fixed.gro
 ```
 
 入力を求められたら、0を押してリターンを押します。(System全体を可視化します)
@@ -266,7 +266,7 @@ gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole -o fixed.gro
 
 温度を下げ、原子の固定をはずして、構造を緩和させます。この時に、体積も変化できるようにし、圧力一定でのシミュレーションに切り替えます。
 
-シミュレーションの設定はさきほどと同じ、`.mdp`に書きます。今回は`relax.mdp`を使用します。
+シミュレーションの設定はさきほどと同じく、`.mdp`に書きます。今回は`relax.mdp`を使用します。
 
 [VSCodeのファイル比較機能](https://www.mytecbits.com/microsoft/dot-net/compare-contents-of-two-files-in-vs-code)を使うと、`relax.mdp`と`fix.mdp`の違いがわかります。
 
@@ -279,14 +279,14 @@ gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole -o fixed.gro
 これを使って、またコンパイルし、実行します。
 
 ```shell
-gmx grompp -maxwarn 1 -f relax.mdp -p ice.top -o relaxed.tpr -c fixed.tpr -t fixed.cpt  > relaxed.grompp.log
+gmx grompp -maxwarn 1 -f relax.mdp -p ice.top  -c fixed.tpr -t fixed.cpt   -o relaxed.tpr
 gmx mdrun -deffnm relaxed
 ```
 
 2-3-3と同じように、`relaxed.gro`を作って、VMDで観察して下さい。今度は、氷の部分の分子もぷるぷると振動していることがわかります。
 
 ```shell
-gmx trjconv -f relaxed.trr -s relaxed.tpr -pbc whole -o relaxed.gro
+gmx trjconv -f relaxed.trr -s relaxed.tpr -pbc whole   -o relaxed.gro
 ```
 
 ## 3. 目標とする温度で、シミュレーションを行う
@@ -295,17 +295,13 @@ gmx trjconv -f relaxed.trr -s relaxed.tpr -pbc whole -o relaxed.gro
 
 作業を行うディレクトリをわけ、結果が上書きされないようにします。
 
-圧力は1気圧、シミュレーション時間は1 nsを目標とします。このシミュレーションではdt=0.002 psとしていますので、1 nsは500 000ステップに相当します。(本当は、最低でも10 ns程度は調べたいところです)
+圧力は1気圧、シミュレーション時間は3〜10 nsを目標とします。このシミュレーションではdt=0.002 psとしていますので、1 nsは500 000ステップに相当します。
 
 温度は250 Kとします。これは、TIP4P/Iceの融点[^1]に対して20 Kも低温なので、氷はただちに成長すると予想されます。
 
 ### 3-1 作業環境の準備
 
-初期配置を作ったフォルダーとは別のところで作業したほうが良いでしょう。
-
-VSCodeを使い、ディレクトリ(フォルダー)を作ります。"New Folder"ボタン![New Folder](https://i.gyazo.com/b045bf92b0be46d81c754fbb2b6a6385.png) を押し、フォルダー名は`250K`としましょう。
-
-継続計算用の設定ファイル`continue.mdp`をVSCodeで開き、下に示すように温度設定を250 Kに修正して、`250K/`フォルダーに**別名で保存**します。ファイル名は`cont.mdp`としておきましょう。
+継続計算用の設定ファイル`continue.mdp`をVSCodeで開き、下に示すように温度設定を250 Kに修正して、ファイル名は`T250.mdp`として**別名で保存**します。(250 K以外の温度の場合は適宜読みかえて下さいね。)
 
 ```
 ...
@@ -315,14 +311,14 @@ ref_t                    = xxxx      ; 系の温度。単位はK。
 ...
 ```
 
-また、`cont.mdp`のはじめの方に、計算ステップ数の指示があります。低温と高温では必要なステップ数が違います。とりあえず、280 K以上では3 ns、それ未満では10 nsのシミュレーションを行いますので、適宜その部分も書きかえて下さい。
+また、`T250.mdp`のはじめの方に、計算ステップ数の指示があります。低温と高温では必要なステップ数が違います。とりあえず、280 K以上では3 ns、それ未満では10 nsのシミュレーションを行いますので、適宜その部分も書きかえて下さい。
 
 ```
 ...
 
-nsteps                   = 1500000     ; MDのステップ数。
-nstxout                  = 1500        ; 座標がnstxoutステップに一度出力される。
-nstlog                   = 1500        ; logに情報が書き込まれる頻度。
+nsteps                   = 5000000     ; MDのステップ数。
+nstxout                  = 5000        ; 座標がnstxoutステップに一度出力される。
+nstlog                   = 5000        ; logに情報が書き込まれる頻度。
 
 ...
 ```
@@ -330,24 +326,18 @@ nstlog                   = 1500        ; logに情報が書き込まれる頻度
 
 `relax.mdp`と`continue.mdp`を比較して下さい。
 
-ターミナルでの作業も、`250K/`フォルダーに移動します。
-
-```shell
-cd 250K
-```
-
-
 ### 3-2 シミュレーションの実行
 
-そして、`250K`フォルダー内で設定ファイルをコンパイルします。生成するファイル名は`cont.tpr`としました。その他のファイルは、一つ上のフォルダーにあるものを流用します。
+そして、設定ファイルをコンパイルします。生成するファイル名は`T250.tpr`としました。
+
 ```shell
-gmx grompp -maxwarn 1 -f cont.mdp -p ../ice.top -o cont.tpr -c ../relaxed.tpr -t ../relaxed.cpt > cont.grompp.log
+gmx grompp -maxwarn 1 -f T250.mdp -p ice.top  -c relaxed.tpr -t relaxed.cpt   -o T250.tpr
 ```
 
 実行!
 
 ```shell
-gmx mdrun -deffnm cont -nt 8
+gmx mdrun -deffnm T250 -nt 8
 ```
 
 並列処理の数`-nt 8`を指定しています。(つけないと途中でエラーを出すケースがありました。でも要らないかも。) 実習では64 coreの計算機を利用するので、最大64まで指定できますが、みんなで同時に実行する可能性があるので、混んでいる時は8または16にとどめて下さい。
@@ -361,13 +351,13 @@ gmx mdrun -deffnm cont -nt 8
 まず、さきほど`gromppp`で生成した`.tpr`ファイルをもとに、実行時間を延長した新しい`.tpr`ファイルを作成します。 `-extend`オプションは追加計算する時間をps単位で指定します。2000 ps=1 nsだけ延長します。
 
 ```shell
-gmx convert-tpr -extend 2000 -s cont.tpr -o extended.tpr
+gmx convert-tpr -extend 2000 -s T250.tpr -o extended.tpr
 ```
 
 そして実行! (継続計算の場合は、オプションをいろいろ指定する必要があるようです。)
 
 ```shell
-gmx mdrun -deffnm extended -cpi cont.cpt -s extended.tpr -noappend
+gmx mdrun -deffnm extended -cpi T250.cpt -s extended.tpr -noappend
 ```
 
 こんどは食事ができるぐらい時間がかかるかもしれません。 -->
@@ -378,7 +368,7 @@ gmx mdrun -deffnm extended -cpi cont.cpt -s extended.tpr -noappend
 まず、トラジェクトリデータ`.trr`を、人間が読める`.gro`形式に変換します。
 
 ```shell
-gmx trjconv -f cont.trr -s cont.tpr -pbc whole -o cont.gro
+gmx trjconv -f T250.trr -s T250.tpr -pbc whole -o T250.gro
 ```
 
 これをDownloadし、VMDで開きます。
@@ -405,13 +395,13 @@ gmx trjconv -f cont.trr -s cont.tpr -pbc whole -o cont.gro
 この`.edr`ファイルの内容を、人間が読みやすい形に変換するのが、`gmx dump`コマンドです。
 
 ```shell
-gmx dump -e cont.edr
+gmx dump -e T250.edr
 ```
 
 ですが、こうして変換されたファイルも、あとのデータ処理にはあまり便利ではありませんそこで、これをさらに自作スクリプト`undump.py`を使って、表形式に変換します。
 
 ```shell
-gmx dump -e cont.edr | python3 ../undump.py > cont.txt
+gmx dump -e T250.edr | python3 ../undump.py > T250.txt
 ```
 
 このファイルをダウンロードし、てきとうなツール(Excel?)を使って開いて、時間とポテンシャルエネルギーの関係をプロットして下さい。
@@ -421,7 +411,7 @@ gmx dump -e cont.edr | python3 ../undump.py > cont.txt
 第1カラムが時刻、第3カラムがポテンシャルエネルギー、第7カラムが密度です。
 
 ```gnuplot
-plot 'cont.txt' u 1:3 w l
+plot 'T250.txt' u 1:3 w l
 ```
 
 ## 6. 融点の推定
@@ -442,6 +432,19 @@ plot 'cont.txt' u 1:3 w l
 
 全員で手分けして、250 Kから290 Kまで(4 K間隔で、ただし270 Kは除く。)のポテンシャルエネルギーの時間変化を採取し、それらの結果から、TIP4P/Iceの融点を推定して下さい。
 
+|ユーザ名| 温度  | 実行時間 |
+|-------|------|--------|
+|q1     | 250 K|10 ns   |
+|q2     | 254 K|10 ns   |
+|q3     | 258 K|10 ns   |
+|q4     | 262 K|10 ns   |
+|q5     | 266 K|10 ns   |
+|q6     | 274 K|10 ns   |
+|q7     | 278 K|10 ns   |
+|q8     | 282 K|3 ns   |
+|q9     | 286 K|3 ns   |
+|q10    | 290 K|3 ns   |
+
 下の論文[^1]によれば、TIP4P/Iceの融点は270 Kとなっていますが、今回は高速化のために、分子数がかなり少ない系でシミュレーションを行っています。そのせいで、融点が270 Kからずれる可能性があります。
 
 予想される融点である270 Kや、それに近い温度では、いつまでたっても凍りも融けもしない可能性がありますので、あまり長い計算をする必要はありません。
@@ -449,14 +452,14 @@ plot 'cont.txt' u 1:3 w l
 相変化が終わるまでにかかる時間は、いつも一定ではありません。本当は、同じ温度で何回か測定し、平均値を求めるべきですが、今回は省略します。
 
 レポートには、以下の情報を書いて下さい。
-1. 各温度で融解または凍結にかかった時間 (表形式)と その根拠となるグラフ(生データ)。
-2. 温度に対し、所要時間の逆数をプロットしたグラフ。
+1. 各温度で融解または凍結にかかった時間 (表形式)と その根拠となるグラフ(生データ)。自分の計算した温度以外のデータは、交換・共有して下さい。(余力があれば、自分でほかの温度を計算しても構いません。)
+2. 温度に対し、所要時間の逆数をプロットしたグラフ。(おおよそでいい)
 3. 2のグラフの形から、どのようにして融点を推定したかの説明、考察など。
-
 
 ## 8. 蛇足
 
 * 最初に作る氷を氷IIIや氷Vにし、適切な圧力を指定すれば、高圧氷の融点も推定可能です。
+  * 高圧では、共存状態から意図しない結晶構造が生じる可能性もあります。ただし、それを見分けるのは難しいでしょう。
 * 固体と気体、あるいは液体と気体の間の相転移でも、同じ方法が使えます。
 * 固体と固体の間の相転移の場合は、シミュレーションセルの直方体の大きさをどちらかの固体の結晶の単位胞にあわせると、もう一方の結晶にとっては不都合になってしまうため、この方法で転移温度を決めることはできません。その場合は、固有振動数計算から自由エネルギーを求める別の技術を用います。
 * 水の場合、液体と、もう一つの液相の間の相転移も観察できます![^2]
@@ -469,7 +472,7 @@ plot 'cont.txt' u 1:3 w l
 Amazon EC2の無料枠でも、そこそこの計算はできます。
 
 1. AWSにアカウントを作ります。クレジットカード番号が必要になります。
-2. EC2ダッシュボードで、EC2インスタンスを作成します。インスタンスタイプt2.micro (2CPU)までなら、無料で利用できます。
+2. EC2ダッシュボードで、EC2インスタンスを作成します。インスタンスタイプt2.micro (2 cores)までなら、無料で利用できます。
 3. OSにはUbuntuを選びます。(計算プラットホームとして利用するのに適しています)
 4. そのほか、ほとんどの設定はデフォルトのままでいいですが、不明な点は講師にお尋ね下さい。
 ### 9-2 Gromacsとその他のツールのインストール
