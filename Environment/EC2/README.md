@@ -73,6 +73,15 @@ make
 
 まだまだ伸びそうな感じ。
 
+ちなみに、同じサイズのintelと比較。(c6i.4xlarge)
+
+* `-nt 4`: 2.3 ns/day。
+* `-nt 8`: 4.3 ns/day。wall timeは20秒。
+* `-nt 16`: 5.1 ns/day。こちらはOpenMPx16。
+* `-ntmpi 16`: 5.7 ns/day。こちらはMPI
+
+コア数が少ないときには速いが、16並列ではもうArmと変わらない。
+
 > MeltingPointでの実測も行うべし。
 
 ## 5. ユーザの作成
