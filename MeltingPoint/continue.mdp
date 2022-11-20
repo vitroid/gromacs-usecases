@@ -40,7 +40,7 @@ rvdw                     = 0.9        ; van der Waals相互作用(Lennard-Jones)
 DispCorr                  = EnerPres
 
 ; Temperature coupling
-tcoupl                   = v-scaling  ; 温度制御の方法。
+tcoupl                   = v-rescale  ; 温度制御の方法。
 nh-chain-length          = 1          ; 5行目 integrater = md のときは1しかないので、気にしなくてよい。
 tc_grps                  = System     ; System全体を対象にする
 tau_t                    = 0.6        ; 温度調節の時定数。
