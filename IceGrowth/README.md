@@ -93,9 +93,9 @@ HW     1.00800       0.000       A   0.00000E+00   0.00000E+00
 4. 温度を戻し、固定を解除します。これにより、液体と固体が半分ずつの初期構造ができます。
 5. 固定を解除した状態で、270 K(融点)付近でしばらくシミュレーションを行い、構造を緩和させます。
 
-![Alt text](https://i.gyazo.com/d8aa8995e76315701b7be2891e5ce2f9.jpg)
+![Alt text](https://i.gyazo.com/bb923db531fb195e68574f636c4c1ef1.png)
 
-> 右半分が融けた氷。左半分は固定されていて動かない。[^3]周期境界条件なので、左端と右端、上端と下端、手前と奥はそれぞれつながっていて分子が出入りできる。
+> 半分が融けた氷。中央の氷部分は固定されていて動かない。周期境界条件なので、左端と右端、上端と下端、手前と奥はそれぞれつながっていて分子が出入りできる。
 
 以下に、具体的な手順を書きます。
 
@@ -260,7 +260,8 @@ gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole   -o fixed.gro
 
 固定した部分は、分子はびくとも動いていないことがわかります。一方、固定していない部分は完全にランダムになっています。
 
-![Half melted](https://i.gyazo.com/b8aceaa130a2caaab557e6298562a8fd.png)
+![Alt text](https://i.gyazo.com/bb923db531fb195e68574f636c4c1ef1.png)
+)
 
 #### 2-3-4 緩和
 
@@ -471,7 +472,5 @@ pip install genice2
 [^1] Conde, M. M., Rovere, M. & Gallo, P. High precision determination of the melting points of water TIP4P/2005 and water TIP4P/Ice models by the direct coexistence technique. J. Chem. Phys. 147, 244506 (2017).
 
 [^2] Yagasaki, T., Matsumoto, M. & Tanaka, H. Spontaneous liquid-liquid phase separation of water. Phys. Rev. E Stat. Nonlin. Soft Matter Phys. 89, 020301 (2014).
-
-[^3] Yeyue Xiong, Parviz Seifpanahi Shabane, and Alexey V. Onufriev*, Melting Points of OPC and OPC3 Water Models, ACS Omega 39, 25087–25094 (2020).
 
 [^4] Espinosa, J. R., Sanz, E., Valeriani, C. & Vega, C. Homogeneous ice nucleation evaluated for several water models. J. Chem. Phys. 141, 18C529 (2014).
