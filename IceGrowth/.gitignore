@@ -1,0 +1,15 @@
+000*
+#*
+UNUSED/
+mdout.*
+@*
+ice.gro
+ice.ndx
+roomy.gro
+*.xtc
+relaxed*
+fixed*
+stretched*
+stretch.gro
+cont.*
+cont_prev.*
