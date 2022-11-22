@@ -12,21 +12,17 @@
 cd MeltingPoint
 ```
 
-### 0-1 クラウドを利用するための準備
-1. クラウド(Amazon EC2)にログインするためのアカウントをこちらから配布します。
-2. VSCodeのウィンドウ左のアイコン![Extension](https://i.gyazo.com/fd1a561033b9f2fbc2245681c70ca67b.png)から、以下の拡張を追加して下さい。
-  * Remote SSH
-3. 所定のIPアドレスに接続します。VSCodeのウィンドウ左下のボタン![Remote](https://i.gyazo.com/bf32d7cb4356d4465343a3caebc7b996.png)を押して下さい。(いろいろ聞いてきます。)
-4. クラウドのコンピュータにプログラムソースを準備します。VSCodeのウィンドウ中央の `Clone Git Repository...`を押し、`Clone from GitHub`と表示されたらリターンを押し、`vitroid/gromacs-usecases`を指定して下さい。保存先を聞かれたらリターンを押します。2回目のログイン以降はこの作業は不要です。
-5. ソースを保存したフォルダーの、`MeltingPoint`フォルダーを開きます。
-<!-- 6. VSCodeのターミナルを開きます。メニューのTerminal→New Terminalでターミナルを開き、以下のコマンドで作業ディレクトリを`MeltingPoint`に切り替えます。
-   ```shell
-   cd MeltingPoint
-   ``` -->
+### 0-1 実行環境の準備
+
+1. コードをダウンロードし、計算サーバのいずれかで展開します。(緑のボタンを押すと、Download ZIPボタンが表示されます。)
+
+    ![Code](https://i.gyazo.com/1c3a92c8494e362c636f41b393be6a0a.png)
+
+    計算サーバ上の空き要領のあるディスク上でZIPファイルを展開しで下さい。
 
 ### 0-2 手許のコンピュータの準備
 
-1. データをプロットするツールを利用します。Igor Proやgnuplotやngraphを使える人はそれを使って下さい。いずれもない場合はExcelやNumbers、それもない場合はGoogle Spreadsheetなどでも代用できます。ただし、個々のプログラムの使い方はここでは解説しません。
+1. 手許のパソコンに、VSCodeをインストールし、VSCodeから計算サーバにリモートアクセスして、IceGrowthフォルダーを開いて下さい。
 2. シミュレーション結果を可視化するツール[VMD](https://www.ks.uiuc.edu/Research/vmd/alpha/)をあらかじめインストールしておいて下さい。
 
 ## 1. 水分子モデルを選ぶ
