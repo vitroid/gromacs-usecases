@@ -59,9 +59,9 @@ for ifile, frame in enumerate(read_gro(sys.stdin)):
             # dc = np.average(delta, axis=0)
             # center = (oxygens[ring[0]]+dc) @ cell
             # print(typ, *center)
-    # total_cycles = sum([stat[y] for y in stat])
+    total_cycles = sum([stat[y] for y in stat])
     # for y in stat:
     #     stat[y] /= total_cycles
     with open(f"{ifile}.cyc.txt", "w") as fh:
         for y in sorted(stat):
-            print(f"{y} {stat[y]}", file=fh)
+            print(f"{y} {stat[y]} {float(prob[y])*total_cycles}", file=fh)
