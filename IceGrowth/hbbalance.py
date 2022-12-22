@@ -6,7 +6,6 @@
 
 import sys
 
-import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import pairlist as pl
@@ -74,8 +73,3 @@ for ifile, frame in enumerate(read_gro(sys.stdin)):
     with open(f"{ifile}.hbb.txt", "w") as fh:
         for i, (f, b) in enumerate(zip(memb_forw, memb_back)):
             print(i*0.01, f-b, f, b, file=fh)
-
-
-# plt
-# plt.plot(np.arange(nbin)*0.01, memb_forw - memb_back)
-# plt.show()
