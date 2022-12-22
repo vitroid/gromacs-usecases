@@ -14,3 +14,6 @@ stretch.gro
 cont.*
 cont_prev.*
 *.txt
+lattices/
+prism.gro
+basal.gro
