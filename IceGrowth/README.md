@@ -440,6 +440,30 @@ python3 hbbalance.py < T250.gro
 
 アイスルールが満足され、全分極が0の氷であれば、この値はどこの面で切っても必ず0になるはずです。逆に言えば、この指標が0でなければ、アイスルールが満足されていないか、全分極が非0であることを意味します。
 
+## 6. 成長面のいれかえ
+
+GenIceで生成したIh構造は、z軸方向がプリズム面$(1010)$ですらなく、$(11\bar 20)$方向となっているようだ。成長方向をベーサル面$(0001)$またはプリズム面にするためには、z軸とxまたはy軸を交換する必要がある。
+
+GenIceには、単位胞の向きを変える機能がある。例えば、x軸とz軸を交換する操作は、行列で書けば、次のようになる。
+$$\left(\begin{matrix}0& 0&1\\0&1&0\\1&0&0 \end{matrix}\right)$$
+同様に、y軸とz軸の交換は次のようになる。
+$$\left(\begin{matrix}1& 0&0\\0&0&1\\0&1&0 \end{matrix}\right)$$
+
+```shell
+mkdir lattices
+genice2 1h -f reshape[0,0,1,0,1,0,1,0,0] > lattices/1hprism.py
+genice2 1h -f reshape[1,0,0,0,0,1,0,1,0] > lattices/1hbasal.py
+```
+で、新たな結晶構造プラグインを作り、これを使って結晶を生成する。
+```shell
+genice2 1hbasal -r 4 4 6 -w tip4p > basal.gro
+genice2 1hprism -r 4 4 6 -w tip4p > prism.gro
+```
+
+確認のため、VMDで表示してみよう。basal.groは、z軸方向から見ると正六角形の配列が見えるはずだ。
+
+
+
 ## 9. 補遺
 
 ### 9-1 Amazon EC2の個人利用
