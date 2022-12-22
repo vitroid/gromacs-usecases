@@ -63,5 +63,5 @@ for ifile, frame in enumerate(read_gro(sys.stdin)):
     # for y in stat:
     #     stat[y] /= total_cycles
     with open(f"{ifile}.cyc.txt", "w") as fh:
-        print("# types0 1 3 5 7 9 11 21", file=fh)
-        print(*[stat[y] for y in sorted(stat)], file=fh)
+        for y in sorted(stat):
+            print(f"{y} {stat[y]}", file=fh)
