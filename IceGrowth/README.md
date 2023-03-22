@@ -245,16 +245,16 @@ Performance:       87.185        0.275
 まず、分子動力学計算で得られた分子配置を、可視化しやすいように変換します。
 
 ```shell
-gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole   -o fixed.gro
+gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole   -o fixed-snapshots.gro
 ```
 
 入力を求められたら、0を押してリターンを押します。(System全体を可視化します)
 
-これで、`fixed.gro`ファイルができました。かなり大きなファイルです。
+これで、`fixed-snapshots.gro`ファイルができました。かなり大きなファイルです。
 
 
 
-1. VSCodeで、`fixed.gro`を右クリックしてダウンロードします。
+1. VSCodeで、`fixed-snapshots.gro`を右クリックしてダウンロードします。
 2. VMDを起動します。
 3. Downloadしたファイルを、VMDのMainウィンドウにドラッグアンドドロップします。
 
@@ -287,7 +287,7 @@ gmx mdrun -deffnm relaxed
 2-3-3と同じように、`relaxed.gro`を作って、VMDで観察して下さい。今度は、氷の部分の分子もぷるぷると振動していることがわかります。
 
 ```shell
-gmx trjconv -f relaxed.trr -s relaxed.tpr -pbc whole   -o relaxed.gro
+gmx trjconv -f relaxed.trr -s relaxed.tpr -pbc whole   -o relaxed-snapshots.gro
 ```
 
 ## 2.5 気相を追加
@@ -402,7 +402,7 @@ gmx mdrun -deffnm extended -cpi T250.cpt -s extended.tpr -noappend
 まず、トラジェクトリデータ`.trr`を、`.gro`形式に変換します。
 
 ```shell
-gmx trjconv -f T250.trr -s T250.tpr -pbc whole -o T250.gro
+gmx trjconv -f T250.trr -s T250.tpr -pbc whole -o T250-snapshots.gro
 ```
 
 これをDownloadし、VMDで開きます。
@@ -467,6 +467,19 @@ python3 cycles.py < T250.gro
 
 初期配置では液体領域があり、その中にも六員環が存在するので、この総数は液体の六員環の数も含んでいます。GenIceで生成した氷では、種類別の環の個数は理想分布(別紙)に一致し、液体の場合も理想分布から外れる理由がないので、初期配置での環種分布は理想分布にほぼ一致すると思われます。一方、氷が成長する間に、偏った種類の環が多めに生じるなら、結晶成長につれてこの分布は理想分布からずれてくるでしょう。
 
+複数の`.cyc.txt`ファイルを並べて、位相3の環の個数だけを列挙する方法。例えば、以下のスクリプトで、10〜10000.cyc.txt(10個おき)を順番にならべ、位相3の情報だけを抽出できます。
+```shell
+seq 1 1000 | sed -e 's/$/0.cyc.txt/' | xargs cat | grep '^3 ' > cyclestat.3.txt
+```
+分解して説明します。
+* `seq 1 1000`は、1〜1000の数列を標準出力します。
+* `sed -e 's/$/0.cyc.txt/'`は、標準入力の行末(`$`)を、`0.cyc.txt`に置きかえ標準出力します。
+* `xargs cat`は、標準入力の内容を`cat`コマンドの引数とみなして実行します。これで、10〜10000.cyc.txtが順番に並んだ大きなテキストファイルが標準出力されます。
+* `grep '^3 '`は、標準入力の内容のうち、行頭が`3 `ではじまる行だけを抽出します。
+
+この結果を`gnuplot`で見れば、環数の時間変化がよみとれます。
+
+
 ## 6. 成長面のいれかえ
 
 GenIceで生成したIh構造は、z軸方向がプリズム面$(1010)$ですらなく、$(11\bar 20)$方向となっているようだ。成長方向をベーサル面$(0001)$またはプリズム面にするためには、z軸とxまたはy軸を交換する必要がある。
@@ -476,10 +489,13 @@ $$\left(\begin{matrix}0& 0&1\\0&1&0\\1&0&0 \end{matrix}\right)$$
 同様に、y軸とz軸の交換は次のようになる。
 $$\left(\begin{matrix}1& 0&0\\0&0&1\\0&1&0 \end{matrix}\right)$$
 
+GenIceには、結晶構造の情報を読みこみ、変形させて新たな結晶構造プラグインを生成する機能がある。→[https://github.com/vitroid/GenIce/wiki/Transform-the-unit-cell](https://github.com/vitroid/GenIce/wiki/Transform-the-unit-cell)
+
+新たに生成したプラグインを`lattices`に格納しておくと、それを使って変形した結晶構造を生成できる。
 ```shell
 mkdir lattices
-genice2 1h -f reshape[0,0,1,0,1,0,1,0,0] > lattices/1hprism.py
-genice2 1h -f reshape[1,0,0,0,0,1,0,1,0] > lattices/1hbasal.py
+genice2 1h -f 'reshape[0,0,1,0,1,0,1,0,0]' > lattices/1hprism.py
+genice2 1h -f 'reshape[1,0,0,0,0,1,0,1,0]' > lattices/1hbasal.py
 ```
 で、新たな結晶構造プラグインを作り、これを使って結晶を生成する。
 ```shell

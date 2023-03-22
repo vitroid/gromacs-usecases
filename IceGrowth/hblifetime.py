@@ -1,21 +1,19 @@
 #!/usr/bin/env python
 
 """
-.groファイルを読みこみ、六員環の種を分類するとともに、環の位置を特定する。
-geniceの_ringstatのコードを流用する。
-将来は_ringstat+analiceに組みこむかもしれない。
+.groファイルを読みこみ、ある瞬間のHB(分子対)が、何フレーム前にも出現していたかの統計をとる。
+水分子の再配向がない氷のなかでは、同じ水素結合がずっと前から存在する一方、液体のなかでは同じ結合が持続する時間はごく短い。
 """
 
 import sys
-from collections import defaultdict
 
-import networkx as nx
 import numpy as np
 import pairlist as pl
-from cycless.cycles import cycles_iter
-from genice2.formats._ringstat import encode, orientations, probabilities
 from gromacs import decompose, read_gro
+from yaplotlib import Yaplot
 
+history = []
+yp = Yaplot()
 for ifile, frame in enumerate(read_gro(sys.stdin)):
     cell = frame["cell"]
     celli = np.linalg.inv(cell)
@@ -43,26 +41,26 @@ for ifile, frame in enumerate(read_gro(sys.stdin)):
             # 分岐水素結合もできるかもしれないが気にしない。
             HBs[jo,i] = d
 
-    g = nx.DiGraph(HBs.keys())
+    history.append(HBs)
+    offset = 10
+    yp.RainbowPalette(100, offset=offset)
 
-    graph = nx.Graph(g)  # undirected
-    stat = defaultdict(int)
-    # Ideal distributions
-    ideal = probabilities(6)
+    # 過去のHBと照合する。これはけっこう時間がかかるはず。
+    for hb in HBs:
+        # 古い順に調べる。
+        for i, h in enumerate(history):
+            if hb in h:
+                # 初出はiフレーム目
+                # つまり、寿命は
+                lifetime = len(history) - i
+                # 統計をとる前に、まずそのまま表示してやろう。
+                j, k = hb
+                o1 = oxygens[j]
+                o2 = oxygens[k]
+                d = o2 - o1
+                d -= np.floor(d+0.5)
+                yp.Palette(lifetime+offset)
+                yp.Line(o1@cell, (o1+d)@cell)
+    yp.NewPage()
 
-    # 最大6員環までを探索する。(無向グラフ)
-    for ring in cycles_iter(graph, 6, pos=oxygens):
-        # 今は6員環のみに興味がある
-        if len(ring) == 6:
-            # 見付けた環の結合の向きを正規化する(8種類の位相のいずれかに分類する)
-            ori = orientations(ring, g)
-            typ = encode(ori)
-            # 計数
-            stat[typ] += 1
-
-    total_cycles = sum([stat[y] for y in stat])
-    # for y in stat:
-    #     stat[y] /= total_cycles
-    with open(f"{ifile}.cyc.txt", "w") as fh:
-        for y in sorted(stat):
-            print(f"{y} {stat[y]} {float(ideal[y])*total_cycles}", file=fh)
+print(yp.dumps())

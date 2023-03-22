@@ -5,7 +5,7 @@ define                   =
 integrator               = md
 
 ; MD steps and output control
-dt                       = 0.002      ; MD計算のΔt (ps)。
+dt                       = 0.0002      ; MD計算のΔt (ps)。
 nsteps                   = 50000      ; MDのステップ数。
 nstxout                  = 500        ; 座標がnstxoutステップに一度出力される。
 nstvout                  = 5000       ; 速度がnstvout ステップに一度出力される。
@@ -36,17 +36,21 @@ tcoupl                   = v-rescale  ; 温度制御の方法。初期配置か�
 nh-chain-length          = 1          ; 5行目 integrater = md のときは1しかないので、気にしなくてよい。
 tc_grps                  = System     ; System全体を対象にする
 tau_t                    = 0.6        ; 温度調節の時定数。
-ref_t                    = 270.0      ; 系の温度。単位はK。
+ref_t                    = 200.0      ; 系の温度。単位はK。
 
 ; Pressure coupling
-Pcoupl                   = no  ; 圧力制御。
-; pcoupltype               = no  ; semiisotropic ;xy方向は等方的に、z方向は別に伸縮する
-; tau_p                    = 1.0        ; 圧力調節の時定数。
-; compressibility          = 4.5e-5 4.5e-5
-; ref_p                    = 1.0    1.0    ; 系の圧力。単位はbar。Pcoupl = no の場合は無効。
+Pcoupl                   = berendsen         ; 圧力制御しない = 体積一定。
+pcoupltype               = isotropic
+tau_p                    = 1.0        ; 圧力調節の時定数。
+compressibility          = 4.5e-5
+ref_p                    = 100000.0        ; 系の圧力。単位はbar。Pcoupl = no の場合は無効。
 
 ; Extende simulations
 gen_vel                  = no
-continuation             = no
+continuation             = yes
 
 energygrps               = System
+
+; additional lines for fixing molecules
+; freezegrps      = OW                 ; .ndxファイルでOWで指定された原子を固定する。
+; freezedim   = Y Y Y                   ; 全方向への移動を禁止する。

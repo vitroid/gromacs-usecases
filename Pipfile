@@ -5,13 +5,15 @@ name = "pypi"
 
 [packages]
 numpy = "*"
-genice2 = "*"
 pairlist = "*"
+matplotlib = "*"
+genice2 = "*"
 
 [dev-packages]
 genice2-stampfli = {file = "https://github.com/vitroid/StampfliTiling/archive/genice2.zip"}
 genice2-cockayne = {file = "https://github.com/vitroid/CockayneTiling/archive/genice2.zip"}
 genice2-cage = "*"
+tilecycles = "*"
 
 [requires]
 python_version = "3.9"

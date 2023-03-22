@@ -1,0 +1,7 @@
+; only used in solvate command.
+#include "4P2005.itp"
+[system]
+ICE TIP4P/2005
+
+[molecules]
+ICE 1404

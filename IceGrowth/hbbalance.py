@@ -72,4 +72,7 @@ for ifile, frame in enumerate(read_gro(sys.stdin)):
 
     with open(f"{ifile}.hbb.txt", "w") as fh:
         for i, (f, b) in enumerate(zip(memb_forw, memb_back)):
-            print(i*0.01, f-b, f, b, file=fh)
+            if f+b > 0:
+                print(i*0.01, f-b, f, b, file=fh)
+            else:
+                print(i*0.01, file=fh)
