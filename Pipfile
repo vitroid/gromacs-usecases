@@ -14,6 +14,7 @@ genice2-stampfli = {file = "https://github.com/vitroid/StampfliTiling/archive/ge
 genice2-cockayne = {file = "https://github.com/vitroid/CockayneTiling/archive/genice2.zip"}
 genice2-cage = "*"
 tilecycles = "*"
+mdanalysis = "*"
 
 [requires]
 python_version = "3.9"
