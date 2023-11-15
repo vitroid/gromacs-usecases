@@ -490,6 +490,8 @@ https://faq.interlink.or.jp/faq2/View/wcDisplayContent.aspx?sso_step=1&id=1373
 https://www.seil.jp/saw-mpc/doc/sa/pppac/use/pppac-client/win11_l2tp.html
 が参考になります(入力する内容は適宜おきかえて下さい)
 
+コントロールパネル→ネットワークと共有センター→アダプタの設定変更→VPNを選ぶ→プロパティ→セキュリティ→次のプロトコルを許可する→CHAPにチェック!!! (ふう。なんでこんなに深いの)
+
 ### 9-2 Amazon EC2の個人利用
 
 Amazon EC2の無料枠でも、そこそこの計算はできます。
