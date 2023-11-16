@@ -509,7 +509,27 @@ genice2 1hprism -r 4 4 6 -w tip4p > prism.gro
 
 ## 9. 補遺
 
-### 9-1 Amazon EC2の個人利用
+### 9-1 VPN接続
+
+岡山大学理論化学研究室所有の計算サーバ(Xeon 96 core, IP `192.168.3.220`)にリモートアクセスします。設定情報は別途お渡しします。
+
+うまく接続できない場合は、Amazon EC2を利用します。
+
+#### 9-1-1 Macの場合
+
+System Settings->VPN->Add VPN Configurationで、設定を入力します。
+
+https://www.cc.uec.ac.jp/ug/ja/remote/vpn/l2tp/macos114/index.html
+が参考になります(入力する内容は適宜おきかえて下さい)
+
+#### 9-1-2 Windowsの場合
+
+https://www.seil.jp/saw-mpc/doc/sa/pppac/use/pppac-client/win11_l2tp.html
+が参考になります(入力する内容は適宜おきかえて下さい)
+
+コントロールパネル→ネットワークと共有センター→アダプタの設定変更→VPNを選ぶ→プロパティ→セキュリティ→次のプロトコルを許可する→CHAPにチェック!!! (ふう。なんでこんなに深いの)
+
+### 9-2 Amazon EC2の個人利用
 
 Amazon EC2の無料枠でも、そこそこの計算はできます。
 
@@ -517,12 +537,12 @@ Amazon EC2の無料枠でも、そこそこの計算はできます。
 2. EC2ダッシュボードで、EC2インスタンスを作成します。インスタンスタイプt2.micro (2 cores)までなら、無料で利用できます。
 3. OSにはUbuntuを選びます。(計算プラットホームとして利用するのに適しています)
 4. そのほか、ほとんどの設定はデフォルトのままでいいですが、不明な点は講師にお尋ね下さい。
-### 9-2 Gromacsとその他のツールのインストール
+### 9-3 Gromacsとその他のツールのインストール
 
 クラウドを使わなくても、Unix系のOSになら、GromacsやGenIceを簡単にインストールできます。
 
 
-#### 9-2-1 Ubuntu/Debian Linuxの場合
+#### 9-3-1 Ubuntu/Debian Linuxの場合
 
 (管理者権限で実行する必要があります。)
 ```shell
@@ -532,11 +552,11 @@ pip install numpy
 pip install genice2
 ```
 
-#### 9-2-2 Redhat/Amazon Linux/CentOS7の場合
+#### 9-3-2 Redhat/Amazon Linux/CentOS7の場合
 
 EC2のAmazon Linux/RedHat Linuxではgromacsパッケージが見付かりませんでした。[RPM](https://rpmfind.net/linux/rpm2html/search.php?query=gromacs)から必要なものを個別にインストールする必要があるようです。
 
-#### 9-2-3 MacOSの場合
+#### 9-3-3 MacOSの場合
 
 Homebrewをセットアップしておきましょう。
 
@@ -546,14 +566,17 @@ brew install gromacs python3
 pip install genice2
 ```
 
-#### 9-2-4 Windowsの場合
+#### 9-3-4 Windowsの場合
 
 (情報求む!)
+
 
 ## References
 
 [^1] Conde, M. M., Rovere, M. & Gallo, P. High precision determination of the melting points of water TIP4P/2005 and water TIP4P/Ice models by the direct coexistence technique. J. Chem. Phys. 147, 244506 (2017).
 
 [^2] Yagasaki, T., Matsumoto, M. & Tanaka, H. Spontaneous liquid-liquid phase separation of water. Phys. Rev. E Stat. Nonlin. Soft Matter Phys. 89, 020301 (2014).
+
+[^3] Yeyue Xiong, Parviz Seifpanahi Shabane, and Alexey V. Onufriev*, Melting Points of OPC and OPC3 Water Models, ACS Omega 39, 25087–25094 (2020).
 
 [^4] Espinosa, J. R., Sanz, E., Valeriani, C. & Vega, C. Homogeneous ice nucleation evaluated for several water models. J. Chem. Phys. 141, 18C529 (2014).
