@@ -15,6 +15,7 @@ genice2-cockayne = {file = "https://github.com/vitroid/CockayneTiling/archive/ge
 genice2-cage = "*"
 tilecycles = "*"
 mdanalysis = "*"
+jinja2 = "*"
 
 [requires]
 python_version = "3.9"
