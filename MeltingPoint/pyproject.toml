@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "MeltingPoint"
+version = "0.1.0"
+description = ""
+authors = ["vitroid <vitroid@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+genice2 = "^2.2.7.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
