@@ -25,7 +25,7 @@ cd MeltingPoint
 
    #### Mac の場合
 
-   1. Orbstack をインストール https://orbstack.dev/download
+   1. Orbstack をインストール https://orbstack.dev/download (Mac 用の Docker Desktop よりもだいぶ便利)
 
    #### Windows の場合
 
@@ -46,6 +46,14 @@ cd MeltingPoint
    ```
 
    (途中で Time Zone を聞いてくるので Asia/Tokyo を答えて下さい。)
+
+   | パッケージ名   | 説明                                   |
+   | -------------- | -------------------------------------- |
+   | python3        | Python 言語                            |
+   | pip            | Python のパッケージマネージャ          |
+   | gromacs        | 分子動力学シミュレーションソフトウェア |
+   | git            | バージョン管理ソフトウェア             |
+   | python3-poetry | Python 仮想環境                        |
 
 1. ここからの作業は VSCode 内のほうが便利です。教材を展開し、Python の実行環境を作ります。
 
@@ -156,7 +164,7 @@ genice2 で氷の構造を生成します。
 genice2 1h -r 3 3 6 -w tip4p > ice.gro
 ```
 
-`-r`オプションで、単位胞を x,y,z 方向にいくつならべるかを指定しています。また、`-w`で水分子モデルの種類を指定します。
+`-r`オプションで、単位胞を x,y,z 方向にいくつならべるかを指定しています。また、`-w`で水分子モデルの種類を指定します。">"は画面に表示される内容をファイルに書きだすことを表す記法です。
 
 `ice.gro`の末尾には、こんな風に箱の大きさが nm 単位で書かれています。
 
@@ -206,7 +214,7 @@ gmx make_ndx -f ice.gro -o ice.ndx
 
 #### 2-2-2 固定した原子のインデックスを追加する
 
-このファイルの末尾に、固定したい原子のインデックスを追加します。
+このファイルの末尾に、固定したい原子のインデックスを追加します。(">>"は既存のファイルの後ろに書きたすことを表す記法です)
 
 ```shell
 python3 zfix.py 0.0 2.7 < ice.gro >> ice.ndx
