@@ -63,7 +63,7 @@ cd MeltingPoint
       poetry shell
       ```
 
-### 0-2 手許のコンピュータの準備
+### 0-2 その他のツールの準備
 
 1. データをプロットするツールを利用します。Igor Pro や gnuplot や ngraph を使える人はそれを使って下さい。いずれもない場合は Excel や Numbers、それもない場合は Google Spreadsheet などでも代用できます。ただし、個々のプログラムの使い方はここでは解説しません。
 2. シミュレーション結果を可視化するツール[VMD](https://www.ks.uiuc.edu/Research/vmd/alpha/)をあらかじめインストールしておいて下さい。
