@@ -11,7 +11,7 @@ Amazon EC2で、CentOS7環境でGromacsをインストールする。
 * c6g.4xlarge (Arm 16 cores)を選ぶ。足りなくなったらあとで停止後にtypeを変更できる。(これはありがたい)
 * OSはUbuntu (GPUを使わない予定なので)
 * 料金は1時間100円ぐらい。
-* Key pairを作っておく。
+* Key pairを作っておく。pemファイルは~/Unison/pem/に入れている。ec2 gromacs.pemを使い続けるのでいい。
 * 起動までしばらくかかる。
 * ホームのあるディスクの容量は標準で8 GBしかない。うち2.5 GBはシステムが埋めているので、残りは5.3 GB。これは足りないかも→16 GBに増やした。これでいく。
 
@@ -24,7 +24,7 @@ Host  35.78.254.xxx
   IdentityFile "/Users/.../ec2 gromacs.pem"
   User ubuntu
 ```
-* sshでログイン。パスワードは聞かれない。
+* sshでログイン。パスワードは聞かれない。`.pem`ファイルの所在を指示する必要がある?
 
 ## 3. 必要物のインストール
 
@@ -39,14 +39,16 @@ sudo apt install gromacs
 ```
 
 ### 3-3 PyPI
-Python 3。10があらかじめインストールされている.
+Python 3.10があらかじめインストールされている.
 ```
 sudo apt install python3-pip
 ```
 
 ### 3-4 GenIce
+pipコマンドはsudo不要。
+
 ```
-sudo pip install numpy genice2
+pip install numpy genice2
 ```
 
 ## 4. Tutorialsの試行
