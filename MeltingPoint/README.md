@@ -57,7 +57,13 @@ cd MeltingPoint
 
 1. ここからの作業は VSCode 内のほうが便利です。教材を展開し、Python の実行環境を作ります。
 
-   1. VSCode で新しいウィンドウを開き、Welcome ペインのなかの青い字「Clone Git Repository」をクリックします。VSCode のウィンドウ上方の入力窓で 1. [Clone from GitHub] 2. `vitroid/gromacs-usecases`と入力して Return/Enter を押す 3. `/root/`を選んで OK をクリック 4. 展開した教材をひらくかどうか聞いてくるので、Open を押します。
+   1. VSCode で新しいウィンドウを開き、Welcome ペインのなかの青い字「Clone Git Repository」をクリックします。VSCode のウィンドウ上方の入力窓で
+
+      1. [Clone from GitHub]
+      2. `vitroid/gromacs-usecases`と入力して Return/Enter を押す
+      3. `/root/`を選んで OK をクリック
+      4. 展開した教材をひらくかどうか聞いてくるので、Open を押します。
+
       これで、教材が仮想マシンの`/root`フォルダー内に展開されます。ここで使うのは MeltingPoint の中身だけです。
 
    2. VSCode 内でターミナルをひらきます。メニュー →Terminal→New Terminal。
