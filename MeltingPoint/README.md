@@ -16,6 +16,19 @@ cd MeltingPoint
 
 ### 0-1 自分の PC に Gromacs の動作環境を作る
 
+自分の PC の中に、Docker を用いて Linux 仮想環境を作成し、その中で Gromacs を走らせます。
+
+Windows 上に直接 Gromacs をインストールしてしまうこともできるはずですが、
+
+- 人によって Windows の設定が違うので、同じように動くかどうかわからない。
+- すでに動いている Windows の環境に影響を与えてしまうかもしれない。
+
+という懸念があります。
+
+仮想環境であれば、ホスト(Windows)に影響を与えることはありませんし、要らなくなったら簡単に仮想環境ごと消去してしまえます。また、設定済みの仮想環境を別の、より速いコンピュータに移して計算を加速することも簡単です。
+
+Windows と仮想環境を橋渡しするのは、統合開発環境 VSCode です。これにより、Windows の快適な環境で、仮想環境内のプログラムを操作できます。
+
 1. VSCode をインストールする。
    1. VSCode に以下の拡張をインストールします。![Extension](https://i.gyazo.com/fd1a561033b9f2fbc2245681c70ca67b.png)
       1. Dev Container: Docker の仮想マシンにアクセスするのに必要です。
@@ -55,18 +68,19 @@ cd MeltingPoint
    | git            | バージョン管理ソフトウェア             |
    | python3-poetry | Python 仮想環境                        |
 
-1. ここからの作業は VSCode 内のほうが便利です。教材を展開し、Python の実行環境を作ります。
+1. ここからの作業は VSCode 内のほうが便利です。
 
-   1. VSCode で新しいウィンドウを開き、Welcome ペインのなかの青い字「Clone Git Repository」をクリックします。VSCode のウィンドウ上方の入力窓で
+   1. VSCode のウィンドウの左下の「><」を押し、「Attach to Running Container」を押すと、Docker セッションに自動的に付けられた英語の妙な名前の選択肢が表示されるので、そのまま選ぶと、新しいウィンドウが開きます。これで、VSCode が、上でインストールした Linux 仮想マシンに接続されました。
+      1. このあと VSCode で表示されるファイルは、Linux 仮想マシンの中にあるファイルです。(Docker をホストしている Windows/Mac からも見えるはずですが、通常のファイルとは違う場所にあります)
+   1. 教材を展開し、Python の実行環境を作ります。VSCode で新しいウィンドウを開き、Welcome ペインのなかの青い字「Clone Git Repository」をクリックします。VSCode のウィンドウ上方の入力窓で
 
-      1. [Clone from GitHub]
-      2. `vitroid/gromacs-usecases`と入力して Return/Enter を押す
-      3. `/root/`を選んで OK をクリック
-      4. 展開した教材をひらくかどうか聞いてくるので、Open を押します。
+      1. `https://github.com/vitroid/gromacs-usecases`と入力して `Clone from URL` を押す
+      2. `/root/`を選んで OK をクリック
+      3. 展開した教材をひらくかどうか聞いてくるので、Open を押します。
 
       これで、教材が仮想マシンの`/root`フォルダー内に展開されます。ここで使うのは MeltingPoint の中身だけです。
 
-   2. VSCode 内でターミナルをひらきます。メニュー →Terminal→New Terminal。
+   1. VSCode 内でターミナルをひらきます。メニュー →Terminal→New Terminal。
       1. Terminal 内で、MeltingPoint フォルダーに移動します。
       ```shell
       cd MeltingPoint
@@ -603,7 +617,7 @@ pip install genice2
 
 [^4] Espinosa, J. R., Sanz, E., Valeriani, C. & Vega, C. Homogeneous ice nucleation evaluated for several water models. J. Chem. Phys. 141, 18C529 (2014).
 
-## 2024 年度は使わない
+## 2024&2025 年度は使わない
 
 ### 0-1 クラウドを利用するための準備
 
