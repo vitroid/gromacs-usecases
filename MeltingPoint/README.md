@@ -44,13 +44,21 @@ Windows と仮想環境を橋渡しするのは、統合開発環境 VSCode で�
 
    1. Docker Desktop をインストール https://docs.docker.com/desktop/setup/install/windows-install/
 
-1. Linux 仮想マシンを起動します。Terminal をひらき、
+1. Linux 仮想マシンを起動します。PowerShell をひらき、
 
    ```shell
-   docker run -it ubuntu
+   docker run -it -v ${HOME}:/host ubuntu
    ```
 
-   と入力すると、プロンプト"#"が表示されます。続いて、仮想マシン内に、最低限必要なソフトウェアをインストールします。
+   > Mac の場合は、`Terminal.app`で
+   >
+   > ```shell
+   > docker run -it -v $HOME:/host ubuntu
+   > ```
+
+   と入力すると、プロンプト"#"が表示されます。Windows/Mac のホームディレクトリが、仮想マシン内では`/host`というフォルダーに見えます。つまり、仮想マシン内でこのフォルダーに読み書きすると、Windows 側からもそのファイルが直接見えます。
+
+   続いて、仮想マシン内に、最低限必要なソフトウェアをインストールします。
 
    ```shell
    apt update
@@ -75,10 +83,10 @@ Windows と仮想環境を橋渡しするのは、統合開発環境 VSCode で�
    1. 教材を展開し、Python の実行環境を作ります。VSCode で新しいウィンドウを開き、Welcome ペインのなかの青い字「Clone Git Repository」をクリックします。VSCode のウィンドウ上方の入力窓で
 
       1. `https://github.com/vitroid/gromacs-usecases`と入力して `Clone from URL` を押す
-      2. `/root/`を選んで OK をクリック
+      2. `/host/` (あるいはその下の好きな場所)を選んで OK をクリック
       3. 展開した教材をひらくかどうか聞いてくるので、Open を押します。
 
-      これで、教材が仮想マシンの`/root`フォルダー内に展開されます。ここで使うのは MeltingPoint の中身だけです。
+      これで、教材が仮想マシンの`/host`フォルダー(実は Windows/Mac のホームディレクトリ)内に展開されます。今回使うのは MeltingPoint の中身だけです。
 
    1. VSCode 内でターミナルをひらきます。メニュー →Terminal→New Terminal。
       1. Terminal 内で、MeltingPoint フォルダーに移動します。
