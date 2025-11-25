@@ -425,7 +425,7 @@ gmx mdrun -deffnm T250
 
 あとの解析で、まだシミュレーションの時間が足りないことがわかった場合は、次のようにして計算を延長することができます。
 
-まず、さきほど`grompp`で生成した`.tpr`ファイルをもとに、実行時間を延長した新しい`.tpr`ファイルを作成します。 `-extend`オプションは追加計算する時間を ps 単位で指定します。2000 ps=1 ns だけ延長します。
+まず、さきほど`grompp`で生成した`.tpr`ファイルをもとに、実行時間を延長した新しい`.tpr`ファイルを作成します。 `-extend`オプションは追加計算する時間を ps 単位で指定します。2000 ps=2 ns だけ延長します。
 
 ```shell
 gmx convert-tpr -extend 2000 -s T250.tpr -o extended.tpr
@@ -438,6 +438,15 @@ gmx mdrun -deffnm extended -cpi T250.cpt -s extended.tpr -noappend
 ```
 
 こんどは食事ができるぐらい時間がかかるかもしれません。
+
+### 3-4 再延長
+
+さらに5 nsを追加する場合。(説明は省略)
+
+```shell
+gmx convert-tpr -extend 5000 -s extended.tpr -o extended2.tpr
+gmx mdrun -deffnm extended -cpi extended.cpt -s extended2.tpr -noappend
+```
 
 ## 4. 結果の可視化
 
@@ -482,6 +491,18 @@ gmx dump -e T250.edr | python3 undump.py > T250.txt
 ```
 
 このファイルをダウンロードし、てきとうなツール(Excel?)を使って開いて、時間とポテンシャルエネルギーの関係をプロットして下さい。
+
+
+延長計算を行う場合、出力されるファイル名がちょっとややこしいことになります。
+
+`extended.part0002.trr`, `extended.part0002.edr`
+
+`.gro`ファイルや`.txt`ファイルを生成するためのコマンドも適宜読みかえて下さい。
+
+```shell
+gmx dump -e extended.part0002.edr | python3 undump.py > T250.extended.txt
+```
+
 
 ### 5-1 Gnuplot の場合
 
