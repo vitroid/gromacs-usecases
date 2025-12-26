@@ -1,0 +1,18 @@
+[ defaults ]
+; https://note.com/tacoma_/n/n03a12675a6d4
+; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ
+1               2               no             1       1
+
+; #include "oplsaa.ff/forcefield.itp"
+
+; atom types should be priorly defined.
+; #include "me.atomtypes.itp"
+
+#include "TraPPE_Vega.itp"
+
+[ system ]
+CO2
+
+[ molecules ]
+; Compound        #mols
+CO2               1000

@@ -1,0 +1,29 @@
+; González-Salgado, D., Piñeiro, M. M. & Vega, C. The molecular phase diagram of carbon dioxide by molecular simulations of the TraPPE model. J. Chem. Phys. 163, 064504 (2025).
+; LJ C 27.0 K 2.8 A   0.7 e 
+; LJ O 79.0 K 3.05 A -0.35 e
+; C-O 1.16 A
+[atomtypes]
+;name     mass      charge   ptype    sigma        epsilon(kJ/mol?)
+C_CO2   12.011      0.7       A      0.2800        0.224478
+O_CO2   15.999     -0.35      A      0.3050        0.656806
+; 計算に使った値と微妙に違うのが気になる。どうする?
+
+[moleculetype]
+; name nrexcl
+CO2  3
+
+
+[atoms]
+; nr type resnr residu atom cgnr charge
+1       C_CO2     1    CO2    C1    1     0.7       12.011
+2       O_CO2     1    CO2    O1    1    -0.35      15.999
+3       O_CO2     1    CO2    O2    1    -0.35      15.999
+
+
+[constraints]
+;i j funct doh  dhh
+1       2       1       0.116
+1       3       1       0.116
+2       3       1       0.232
+
+; 2025-10-09たぶんこれでいいと思うのだが
