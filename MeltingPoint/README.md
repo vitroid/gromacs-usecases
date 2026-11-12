@@ -36,6 +36,7 @@ Windows と仮想環境を橋渡しするのは、統合開発環境 VSCode で�
       3. GROMACS Helper (mcardzh): `.mdp`や`.top`が見やすくなります。`.edr`ファイルのグラフ表示もできます。
 
       仮想マシンに接続したあと(下の手順 4)、Python と GROMACS Helper は拡張機能の画面で「Install in Container」を押して、仮想マシン側にも入れて下さい。
+
 1. Docker を用いて、仮想 Linux マシンを自分の PC の中に作ります。
 
    #### Mac の場合
@@ -96,15 +97,18 @@ Windows と仮想環境を橋渡しするのは、統合開発環境 VSCode で�
 
    1. VSCode 内でターミナルをひらきます。メニュー →Terminal→New Terminal。
       1. Terminal 内で、MeltingPoint フォルダーに移動します。
+
       ```shell
       cd MeltingPoint
       ```
 
       2. Python の実行環境を準備します。
+
       ```shell
       poetry install
       source .venv/bin/activate
       ```
+
       プロンプトの先頭に括弧でくくられた仮想環境の名前が表示されていれば準備完了です。新しくターミナルを開いたときは、そのたびに`source .venv/bin/activate`を実行して下さい。(VSCode で`.venv`の Python をインタープリタとして選んでおくと、自動的に実行されます)
 
 ### 0-2 その他のツールの準備
@@ -465,11 +469,11 @@ gmx mdrun -deffnm extended -cpi extended.cpt -s extended2.tpr -noappend
 
 今回の系は 3456 原子と小さいので、1 つの計算に CPU コアをたくさん割りあてても、あまり速くなりません。8 コアの Mac での実測では、
 
-| 走らせ方             | 1 本あたりの速さ | 合計の速さ |
-| -------------------- | ---------------- | ---------- |
-| 8 スレッド × 1 本    | 66 ns/day        | 66 ns/day  |
-| 4 スレッド × 2 本    | 52 ns/day        | 103 ns/day |
-| 2 スレッド × 4 本    | 29 ns/day        | 116 ns/day |
+| 走らせ方          | 1 本あたりの速さ | 合計の速さ |
+| ----------------- | ---------------- | ---------- |
+| 8 スレッド × 1 本 | 66 ns/day        | 66 ns/day  |
+| 4 スレッド × 2 本 | 52 ns/day        | 103 ns/day |
+| 2 スレッド × 4 本 | 29 ns/day        | 116 ns/day |
 
 でした。複数の温度を担当する場合は、順番に計算するよりも、同時に走らせるほうが早く終わります。`-nt`で 1 本あたりのスレッド数を指定し、合計が自分の PC のコア数を越えないようにします。
 
@@ -532,7 +536,6 @@ gmx dump -e T250.edr | python3 undump.py > T250.txt
 
 このファイルを Windows/Mac 側でてきとうなツール(Excel?)を使って開いて、時間とポテンシャルエネルギーの関係をプロットして下さい。(GROMACS Helper 拡張を入れていれば、VSCode で`.edr`ファイルを開くだけでグラフを表示できます)
 
-
 延長計算を行う場合、出力されるファイル名がちょっとややこしいことになります。
 
 `extended.part0002.trr`, `extended.part0002.edr`
@@ -542,7 +545,6 @@ gmx dump -e T250.edr | python3 undump.py > T250.txt
 ```shell
 gmx dump -e extended.part0002.edr | python3 undump.py > T250.extended.txt
 ```
-
 
 ### 5-1 Gnuplot の場合
 
@@ -572,12 +574,12 @@ plot 'T250.txt' u 1:3 w l
 
 一人で 2 つ以上の温度を受けもつことになります。低温側は時間がかかるので、低温 1 つと高温 1 つを組にして、3-5 の方法で同時に計算して下さい。分担の例:
 
-| 担当 | 温度          |
-| ---- | ------------- |
-| A    | 255 K, 285 K  |
-| B    | 260 K, 280 K  |
-| C    | 265 K, 275 K  |
-| 余力 | 250 K, 290 K  |
+| 担当 | 温度         |
+| ---- | ------------ |
+| A    | 255 K, 285 K |
+| B    | 260 K, 280 K |
+| C    | 265 K, 275 K |
+| 余力 | 250 K, 290 K |
 
 授業時間内は全員 3 ns まで計算し、低温側で足りない分は 3-3 の方法で延長して下さい。
 
@@ -695,7 +697,7 @@ pip install genice2
 
 [^4] Espinosa, J. R., Sanz, E., Valeriani, C. & Vega, C. Homogeneous ice nucleation evaluated for several water models. J. Chem. Phys. 141, 18C529 (2014).
 
-## 2024&2025 年度は使わない
+## 2024以降は使わない
 
 ### 0-1 クラウドを利用するための準備
 
