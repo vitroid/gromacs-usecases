@@ -452,7 +452,16 @@ gmx mdrun -deffnm extended -cpi T250.cpt -s extended.tpr -noappend
 
 こんどは食事ができるぐらい時間がかかるかもしれません。
 
-### 3-4 複数の温度を同時に計算する
+### 3-4 再延長
+
+さらに5 nsを追加する場合。(説明は省略)
+
+```shell
+gmx convert-tpr -extend 5000 -s extended.tpr -o extended2.tpr
+gmx mdrun -deffnm extended -cpi extended.cpt -s extended2.tpr -noappend
+```
+
+### 3-5 複数の温度を同時に計算する
 
 今回の系は 3456 原子と小さいので、1 つの計算に CPU コアをたくさん割りあてても、あまり速くなりません。8 コアの Mac での実測では、
 
@@ -523,6 +532,18 @@ gmx dump -e T250.edr | python3 undump.py > T250.txt
 
 このファイルを Windows/Mac 側でてきとうなツール(Excel?)を使って開いて、時間とポテンシャルエネルギーの関係をプロットして下さい。(GROMACS Helper 拡張を入れていれば、VSCode で`.edr`ファイルを開くだけでグラフを表示できます)
 
+
+延長計算を行う場合、出力されるファイル名がちょっとややこしいことになります。
+
+`extended.part0002.trr`, `extended.part0002.edr`
+
+`.gro`ファイルや`.txt`ファイルを生成するためのコマンドも適宜読みかえて下さい。
+
+```shell
+gmx dump -e extended.part0002.edr | python3 undump.py > T250.extended.txt
+```
+
+
 ### 5-1 Gnuplot の場合
 
 第 1 カラムが時刻、第 3 カラムがポテンシャルエネルギー、第 7 カラムが密度です。
@@ -549,7 +570,7 @@ plot 'T250.txt' u 1:3 w l
 
 全員で手分けして、250 K から 290 K まで(5 K 間隔で、ただし 270 K は除く。)のポテンシャルエネルギーの時間変化を採取し、それらの結果から、TIP4P/Ice の融点を推定して下さい。
 
-一人で 2 つ以上の温度を受けもつことになります。低温側は時間がかかるので、低温 1 つと高温 1 つを組にして、3-4 の方法で同時に計算して下さい。分担の例:
+一人で 2 つ以上の温度を受けもつことになります。低温側は時間がかかるので、低温 1 つと高温 1 つを組にして、3-5 の方法で同時に計算して下さい。分担の例:
 
 | 担当 | 温度          |
 | ---- | ------------- |

@@ -13,3 +13,5 @@ cont.*
 cont_prev.*
 T*
 *.lock
+extended*
+.DS_Store*

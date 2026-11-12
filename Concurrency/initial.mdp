@@ -1,0 +1,77 @@
+; title                    = test1
+; cpp                      = /lib/cpp
+include                  =
+define                   =
+integrator               = md
+
+; MD steps and output control
+dt                       = 0.001     ; MD計算のΔt (ps)。
+nsteps                   = 100000      ; MDのステップ数。
+nstxout                  = 1000        ; 座標が$nstxoutステップに一度出力される。
+nstvout                  = 50000      ; 速度が$nstvout ステップに一度出力される。
+nstlog                   = 100        ; logに情報が書き込まれる頻度。
+nstenergy                = 500        ; エネルギーが$nstenergyステップに一度出力される。
+nstxtcout                = 0
+
+; Neighbor searching
+nstlist                  = 10
+; ns_type                  = grid
+; cutoff_scheme            = group  before 2022
+cutoff_scheme            = verlet
+
+; Coulomb and vdW interactions
+coulombtype              = pme ;particle-mesh Ewald
+epsilon-rf               = 80    ; the value for water
+vdwtype                  = cut-off
+fourierspacing           = 0.12
+pme_order                = 4
+ewald_rtol               = 1e-5
+rlist                    = 0.9
+rcoulomb                 = 0.9
+rvdw                     = 0.9
+verlet-buffer-tolerance  = 0.005 ; kJ/mol/ps
+
+; Long range LJ correction
+DispCorr                  = EnerPres
+
+; Temperature coupling
+tcoupl                   = v-rescale   ; 温度制御の方法。初期配置から走らせる場合は、v-rescaleで強制的に温度をおちつかせる。
+nh-chain-length          = 5
+tc_grps                  = System
+tau_t                    = 2         ; 温度調節の時定数。 ps
+ref_t                    = 230.0       ; 系の温度。単位はK。
+
+; Pressure coupling
+Pcoupl                   = berendsen
+pcoupltype               = isotropic
+tau_p                    = 15         ; 圧力調節の時定数。
+compressibility          = 4.5e-5 0
+ref_p                    = 400    ; 系の圧力。単位はbar。
+
+; Extende simulations
+gen_vel                  = yes
+continuation             = no
+
+energygrps               = System
+
+; Methaneならこれで動いた。
+; constraints              = all-bonds
+; constraint-algorithm     = SHAKE
+
+; OPTIONS FOR BONDS    
+constraints              = all-bonds
+; constraint-algorithm     = SHAKE
+; constraints              = none
+; Type of constraint algorithm
+constraint-algorithm     = Lincs
+; constraint-algorithm     = SHAKE
+; lincs-iter               = 10
+; shake_tol            = 0.0001
+
+; ; graphene分子がセルをまたいでいることを指示。
+; periodic_molecules = yes
+; pbc = xyz
+
+; Gyroidが流れていかないように固定する。
+; freezegrps      = FIX
+; freezedim   = Y Y Y
