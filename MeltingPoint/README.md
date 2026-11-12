@@ -43,6 +43,16 @@ Windows と仮想環境を橋渡しするのは、統合開発環境 VSCode で�
    1. Orbstack をインストール https://orbstack.dev/download (Mac 用の Docker Desktop よりもだいぶ便利)
 
    #### Windows の場合
+   1. Docker Desktop は WSL 2 の上で動きます。PowerShell を「管理者として実行」で開き、次を実行します。
+
+      ```powershell
+      wsl --install
+      ```
+
+      再起動を求められたら再起動します。初回に Ubuntu のウィンドウが開き、Linux 用のユーザー名とパスワードを聞かれます。これはこのあとの実習で使う仮想マシンとは別物なので、ユーザーを作って閉じて下さい。
+
+      `wsl --version`で版が表示される場合は、この手順は不要です。表示されない古い WSL の場合は、`wsl --install`の代わりに`wsl --update`を実行します。
+
    1. Docker Desktop をインストール https://docs.docker.com/desktop/setup/install/windows-install/
 
 1. Linux 仮想マシンを起動します。PowerShell をひらき、
