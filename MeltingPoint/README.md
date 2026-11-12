@@ -30,40 +30,48 @@ Windows 上に直接 Gromacs をインストールしてしまうこともでき
 Windows と仮想環境を橋渡しするのは、統合開発環境 VSCode です。これにより、Windows の快適な環境で、仮想環境内のプログラムを操作できます。
 
 1. VSCode をインストールする。
-   1. VSCode に以下の拡張をインストールします。![Extension](https://i.gyazo.com/fd1a561033b9f2fbc2245681c70ca67b.png)
-      1. Dev Container: Docker の仮想マシンにアクセスするのに必要です。
-      2. Git Extension Pack
-      3. gromacs helper: データが見やすくなります。
+   1. VSCode のウィンドウ左端の拡張機能アイコン ![Extension](images/extensions-icon.png) (Ctrl+Shift+X)から、以下の拡張をインストールします。
+      1. Dev Containers (Microsoft): Docker の仮想マシンにアクセスするのに必要です。
+      2. Python (Microsoft): Python の仮想環境をターミナルで自動的に有効にしてくれます。
+      3. GROMACS Helper (mcardzh): `.mdp`や`.top`が見やすくなります。`.edr`ファイルのグラフ表示もできます。
+
+      仮想マシンに接続したあと(下の手順 4)、Python と GROMACS Helper は拡張機能の画面で「Install in Container」を押して、仮想マシン側にも入れて下さい。
 1. Docker を用いて、仮想 Linux マシンを自分の PC の中に作ります。
 
    #### Mac の場合
-
    1. Orbstack をインストール https://orbstack.dev/download (Mac 用の Docker Desktop よりもだいぶ便利)
 
    #### Windows の場合
-
    1. Docker Desktop をインストール https://docs.docker.com/desktop/setup/install/windows-install/
 
 1. Linux 仮想マシンを起動します。PowerShell をひらき、
 
    ```shell
-   docker run -it -v ${HOME}:/host ubuntu
+   docker run -it --name gmx -v ${HOME}:/host ubuntu:24.04
    ```
 
    > Mac の場合は、`Terminal.app`で
    >
    > ```shell
-   > docker run -it -v $HOME:/host ubuntu
+   > docker run -it --name gmx -v $HOME:/host ubuntu:24.04
    > ```
 
    と入力すると、プロンプト"#"が表示されます。Windows/Mac のホームディレクトリが、仮想マシン内では`/host`というフォルダーに見えます。つまり、仮想マシン内でこのフォルダーに読み書きすると、Windows 側からもそのファイルが直接見えます。
+
+   > `exit`したり PC を再起動したりして仮想マシンが止まった場合は、`docker run`をもう一度実行するのではなく、
+   >
+   > ```shell
+   > docker start -ai gmx
+   > ```
+   >
+   > で再開して下さい。(`docker run`は新しい空の仮想マシンを作ってしまいます)
 
    続いて、仮想マシン内に、最低限必要なソフトウェアをインストールします。
 
    ```shell
    apt update
    apt upgrade -y
-   apt install -y python3 pip gromacs git python3-poetry
+   apt install -y python3 python3-pip gromacs git python3-poetry
    ```
 
    (途中で Time Zone を聞いてくるので Asia/Tokyo を答えて下さい。)
@@ -71,33 +79,33 @@ Windows と仮想環境を橋渡しするのは、統合開発環境 VSCode で�
    | パッケージ名   | 説明                                   |
    | -------------- | -------------------------------------- |
    | python3        | Python 言語                            |
-   | pip            | Python のパッケージマネージャ          |
+   | python3-pip    | Python のパッケージマネージャ          |
    | gromacs        | 分子動力学シミュレーションソフトウェア |
    | git            | バージョン管理ソフトウェア             |
    | python3-poetry | Python 仮想環境                        |
 
 1. ここからの作業は VSCode 内のほうが便利です。
-
    1. VSCode のウィンドウの左下の「><」を押し、「Attach to Running Container」を押すと、Docker セッションに自動的に付けられた英語の妙な名前の選択肢が表示されるので、そのまま選ぶと、新しいウィンドウが開きます。これで、VSCode が、上でインストールした Linux 仮想マシンに接続されました。
       1. このあと VSCode で表示されるファイルは、Linux 仮想マシンの中にあるファイルです。(Docker をホストしている Windows/Mac からも見えるはずですが、通常のファイルとは違う場所にあります)
    1. 教材を展開し、Python の実行環境を作ります。VSCode で新しいウィンドウを開き、Welcome ペインのなかの青い字「Clone Git Repository」をクリックします。VSCode のウィンドウ上方の入力窓で
-
       1. `https://github.com/vitroid/gromacs-usecases`と入力して `Clone from URL` を押す
       2. `/host/` (あるいはその下の好きな場所)を選んで OK をクリック
       3. 展開した教材をひらくかどうか聞いてくるので、Open を押します。
 
-      これで、教材が仮想マシンの`/host`フォルダー(実は Windows/Mac のホームディレクトリ)内に展開されます。今回使うのは MeltingPoint の中身だけです。
+      これで、教材が仮想マシンの`/host`フォルダー(実は Windows/Mac のホームディレクトリ)内に展開されます。今回使うのは MeltingPoint の中身だけです。`/host/gromacs-usecases`に展開した場合、Windows/Mac 側ではホームフォルダーの中の`gromacs-usecases`フォルダーとして見えます。以下で作るファイルはすべて、Finder やエクスプローラーから直接開けます。
 
    1. VSCode 内でターミナルをひらきます。メニュー →Terminal→New Terminal。
       1. Terminal 内で、MeltingPoint フォルダーに移動します。
       ```shell
       cd MeltingPoint
       ```
+
       2. Python の実行環境を準備します。
       ```shell
       poetry install
-      poetry shell
+      source .venv/bin/activate
       ```
+      プロンプトの先頭に括弧でくくられた仮想環境の名前が表示されていれば準備完了です。新しくターミナルを開いたときは、そのたびに`source .venv/bin/activate`を実行して下さい。(VSCode で`.venv`の Python をインタープリタとして選んでおくと、自動的に実行されます)
 
 ### 0-2 その他のツールの準備
 
@@ -113,7 +121,7 @@ Windows と仮想環境を橋渡しするのは、統合開発環境 VSCode で�
 
 ここでは、近年開発され、信頼性の高い TIP4P/Ice モデルを利用します。このモデルの 1 気圧での融点は 270 K と言われており[^1]、常温以下での水や氷やハイドレート(水和結晶)のふるまいを研究するのによく使われています。
 
-> 氷の融点なんて、実験ですでにわかっているだろうって?その通りです。でも、コンピュータシミュレーションで用いる水分子モデルの融点が知りたいのです。モデルの質が悪ければ、融点は実験値とはあわないでしょう。分子シミュレーションの目的は、**実験と合うデータを得ることではありません**。実験を再現することを保証しつつ、実験では見えない情報をとりだすことに価値があります。融点などの物性をよく制限するモデルであれば、分子の運動もそれなりに正しく再現していると考えられます。そうであれば、例えば固液界面からどのように水が凍っていくのかをその場で観察した結果(これは実験では見えない)をも信頼できると期待できます。
+> 氷の融点なんて、実験ですでにわかっているだろうって?その通りです。でも、コンピュータシミュレーションで用いる水分子モデルの融点が知りたいのです。モデルの質が悪ければ、融点は実験値とはあわないでしょう。分子シミュレーションの目的は、**実験と合うデータを得ることではありません**。実験を再現することを保証しつつ、実験では見えない情報をとりだすことに価値があります。融点などの物性をよく再現するモデルであれば、分子の運動もそれなりに正しく再現していると考えられます。そうであれば、例えば固液界面からどのように水が凍っていくのかをその場で観察した結果(これは実験では見えない)をも信頼できると期待できます。
 
 TIP4P/Ice の形状の詳細は[リンク先](http://www.sklogwiki.org/SklogWiki/index.php/TIP4P/Ice_model_of_water)を見て下さい。
 
@@ -174,7 +182,7 @@ HW     1.00800       0.000       A   0.00000E+00   0.00000E+00
 4. 温度を戻し、固定を解除します。これにより、液体と固体が半分ずつの初期構造ができます。
 5. 固定を解除した状態で、270 K(融点)付近でしばらくシミュレーションを行い、構造を緩和させます。
 
-![Alt text](https://i.gyazo.com/d8aa8995e76315701b7be2891e5ce2f9.jpg)
+![Half-fixed ice](images/coexistence.jpg)
 
 > 右半分が融けた氷。左半分は固定されていて動かない。[^3]周期境界条件なので、左端と右端、上端と下端、手前と奥はそれぞれつながっていて分子が出入りできる。
 
@@ -210,9 +218,9 @@ genice2 1h -r 3 3 6 -w tip4p > ice.gro
 
 x, y, z 軸方向の寸法がそれぞれ 2.3 nm, 2.2 nm, 5.4 nm で、z 方向に長いセルです。
 
-とりあえず、この構造を可視化してみましょう。VSCode のウィンドウ左側のファイルブラウザで`ice.gro`を右クリックし、ダウンロードします。そのファイルを VMD で開きます。
+とりあえず、この構造を可視化してみましょう。Windows/Mac 側から`ice.gro`を VMD で開きます(VMD の Main ウィンドウにドラッグアンドドロップします)。
 
-![ice Ih](https://i.gyazo.com/d30d131bc64aaf09ab4a7e356bf0b299.png)
+![ice Ih](images/ice-ih.png)
 
 ### 2-2 分子を固定する
 
@@ -247,6 +255,8 @@ gmx make_ndx -f ice.gro -o ice.ndx
 ```shell
 python3 zfix.py 0.0 2.7 < ice.gro >> ice.ndx
 ```
+
+> `ModuleNotFoundError: No module named 'numpy'`と表示された場合は、Python の仮想環境が有効になっていません。`source .venv/bin/activate`を実行してから、`gmx make_ndx`からやり直して下さい。このエラーを見逃すと、次の`gmx grompp`で`Group FIX referenced in the .mdp file was not found`というエラーになります。
 
 これにより、`ice.ndx`ファイルの末尾に、以下のような行が追加されます。
 
@@ -283,7 +293,7 @@ gmx grompp -maxwarn 1 -f fix.mdp -p ice.top -c ice.gro -n ice.ndx   -o fixed.tpr
 
 #### 2-3-2 実行
 
-2-3-1 で作った 00001.tpr を読みこんでシミュレーションを実行します!
+2-3-1 で作った fixed.tpr を読みこんでシミュレーションを実行します!
 
 ```shell
 gmx mdrun -deffnm fixed
@@ -332,13 +342,12 @@ gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole   -o fixed.gro
 
 これで、`fixed.gro`ファイルができました。かなり大きなファイルです。
 
-1. VSCode で、`fixed.gro`を右クリックしてダウンロードします。
-2. VMD を起動します。
-3. Download したファイルを、VMD の Main ウィンドウにドラッグアンドドロップします。
+1. VMD を起動します。
+2. Windows/Mac 側から`fixed.gro`を、VMD の Main ウィンドウにドラッグアンドドロップします。
 
 固定した部分は、分子はびくとも動いていないことがわかります。一方、固定していない部分は完全にランダムになっています。
 
-![Half melted](https://i.gyazo.com/b8aceaa130a2caaab557e6298562a8fd.png)
+![Half melted](images/half-melted.png)
 
 #### 2-3-4 緩和
 
@@ -348,10 +357,10 @@ gmx trjconv -f fixed.trr -s fixed.tpr -pbc whole   -o fixed.gro
 
 [VSCode のファイル比較機能](https://www.mytecbits.com/microsoft/dot-net/compare-contents-of-two-files-in-vs-code)を使うと、`relax.mdp`と`fix.mdp`の違いがわかります。
 
-変更されているのは 3 点。
+変更されているのは次の点です。
 
 1. 温度が 270 K に下げられた。
-2. 体積一定から圧力一定に切り替えた。
+2. 体積一定から圧力一定に切り替えた。氷と水の界面が z 軸に垂直なので、xy 方向と z 方向を別々に伸縮させる設定(`pcoupltype = semiisotropic`)になっている。これに伴い、`compressibility`と`ref_p`は値が 2 つずつになる。
 3. 分子の固定を外した。
 
 これを使って、またコンパイルし、実行します。
@@ -389,19 +398,23 @@ ref_t                    = xxxx      ; 系の温度。単位はK。
 
 また、`T250.mdp`のはじめの方に、計算ステップ数の指示があります。低温と高温では必要なステップ数が違います。とりあえず、280 K 以上では 3 ns、それ未満では 10 ns のシミュレーションを行いたいのですが、講義時間内に計算が終わらない可能性を考え、まず全員 3 ns を計算して下さい。(あとから延長できます)
 
-10 ns の計算に挑戦する場合は、以下の部分を書きかえて下さい。
+10 ns の計算に挑戦する場合は、3 ns 用の`nsteps`、`nstxout`、`nstlog`の 3 行をコメントアウトし(行頭に`;`をつける)、その下にある 10 ns 用の 3 行の`;`を外して下さい。
 
 ```
-...
+; 280 K 以上; 3 ns
+; nsteps                   = 1500000     ; MDのステップ数。
+; nstxout                  = 1500        ; 座標がnstxoutステップに一度出力される。
+; nstlog                   = 1500        ; logに情報が書き込まれる頻度。
 
+; 280 K 未満; 10 ns
 nsteps                   = 5000000     ; MDのステップ数。
 nstxout                  = 5000        ; 座標がnstxoutステップに一度出力される。
 nstlog                   = 5000        ; logに情報が書き込まれる頻度。
-
-...
 ```
 
-`relax.mdp`と`continue.mdp`を比較して下さい。
+3 ns 用の行を残したまま 10 ns 用の行も有効にすると、`gmx grompp`が`Parameter "nsteps" doubly defined`というエラーで止まります。
+
+`relax.mdp`と`continue.mdp`を比較して下さい。ステップ数と温度以外で実質的に違うのは、圧力調節の時定数`tau_p`です。緩和では`1.0`にして圧力をすばやく目標に寄せ、本計算では`32.0`とゆるくして、圧力制御で界面が乱れにくくしています。
 
 ### 3-2 シミュレーションの実行
 
@@ -425,7 +438,7 @@ gmx mdrun -deffnm T250
 
 あとの解析で、まだシミュレーションの時間が足りないことがわかった場合は、次のようにして計算を延長することができます。
 
-まず、さきほど`grompp`で生成した`.tpr`ファイルをもとに、実行時間を延長した新しい`.tpr`ファイルを作成します。 `-extend`オプションは追加計算する時間を ps 単位で指定します。2000 ps=1 ns だけ延長します。
+まず、さきほど`grompp`で生成した`.tpr`ファイルをもとに、実行時間を延長した新しい`.tpr`ファイルを作成します。 `-extend`オプションは追加計算する時間を ps 単位で指定します。2000 ps=2 ns だけ延長します。
 
 ```shell
 gmx convert-tpr -extend 2000 -s T250.tpr -o extended.tpr
@@ -439,9 +452,36 @@ gmx mdrun -deffnm extended -cpi T250.cpt -s extended.tpr -noappend
 
 こんどは食事ができるぐらい時間がかかるかもしれません。
 
+### 3-4 複数の温度を同時に計算する
+
+今回の系は 3456 原子と小さいので、1 つの計算に CPU コアをたくさん割りあてても、あまり速くなりません。8 コアの Mac での実測では、
+
+| 走らせ方             | 1 本あたりの速さ | 合計の速さ |
+| -------------------- | ---------------- | ---------- |
+| 8 スレッド × 1 本    | 66 ns/day        | 66 ns/day  |
+| 4 スレッド × 2 本    | 52 ns/day        | 103 ns/day |
+| 2 スレッド × 4 本    | 29 ns/day        | 116 ns/day |
+
+でした。複数の温度を担当する場合は、順番に計算するよりも、同時に走らせるほうが早く終わります。`-nt`で 1 本あたりのスレッド数を指定し、合計が自分の PC のコア数を越えないようにします。
+
+例えば 255 K と 285 K を同時に計算するには、以下のようにします。(3-1 の`.mdp`ファイルの編集と 3-2 の`grompp`、`mdrun`をまとめて行います。)
+
+```shell
+for T in 255 285; do
+  sed "s/^ref_t .*/ref_t = $T/" continue.mdp > T$T.mdp
+  gmx grompp -maxwarn 1 -f T$T.mdp -p ice.top -c relaxed.tpr -t relaxed.cpt -o T$T.tpr
+  nohup gmx mdrun -deffnm T$T -nt 4 > T$T.out 2>&1 &
+done
+```
+
+- `nohup ... &`をつけると、計算が裏で走り続けます。VSCode のウィンドウやターミナルを閉じても計算は止まりません。
+- 進み具合は、VSCode で`T255.log`を開いて確認できます。計算が進むとファイルが更新され、エディタの内容も追従します。
+- ただし、PC がスリープすると計算は止まります。長時間の計算中は、スリープしないように設定して下さい。(Mac なら別のターミナルで`caffeinate`を実行、Windows なら「設定」→「システム」→「電源」でスリープを「なし」に)
+- 仮想マシン(Docker)を止めても計算は止まります。
+
 ## 4. 結果の可視化
 
-実際にどんなことが起こっているのかを確認するために、分子座標データを手許のコンピュータに転送し、VMD で分子運動を表示させてみましょう。
+実際にどんなことが起こっているのかを確認するために、VMD で分子運動を表示させてみましょう。
 
 まず、トラジェクトリデータ`.trr`を、`.gro`形式に変換します。
 
@@ -451,7 +491,7 @@ gmx mdrun -deffnm extended -cpi T250.cpt -s extended.tpr -noappend
 gmx trjconv -f T250.trr -s T250.tpr -pbc whole -o T250.gro
 ```
 
-これを Download し、VMD で開きます。
+これを Windows/Mac 側から VMD で開きます。
 
 1 ns の計算では、融解しつつあるのか凍結しつつあるのか判別が難しい場合がありますが、10 ns 計算すれば、おおよそ判別がつきます。
 
@@ -475,13 +515,13 @@ gmx trjconv -f T250.trr -s T250.tpr -pbc whole -o T250.gro
 gmx dump -e T250.edr
 ```
 
-ですが、こうして変換されたファイルも、あとのデータ処理にはあまり便利ではありませんそこで、これをさらに自作スクリプト`undump.py`を使って、表形式に変換します。
+ですが、こうして変換されたファイルも、あとのデータ処理にはあまり便利ではありません。そこで、これをさらに自作スクリプト`undump.py`を使って、表形式に変換します。
 
 ```shell
 gmx dump -e T250.edr | python3 undump.py > T250.txt
 ```
 
-このファイルをダウンロードし、てきとうなツール(Excel?)を使って開いて、時間とポテンシャルエネルギーの関係をプロットして下さい。
+このファイルを Windows/Mac 側でてきとうなツール(Excel?)を使って開いて、時間とポテンシャルエネルギーの関係をプロットして下さい。(GROMACS Helper 拡張を入れていれば、VSCode で`.edr`ファイルを開くだけでグラフを表示できます)
 
 ### 5-1 Gnuplot の場合
 
@@ -495,7 +535,7 @@ plot 'T250.txt' u 1:3 w l
 
 十分長いシミュレーションを行えば、融点より高温では氷は完全に融解し、低温では完全に凍結するはずです。そして、ポテンシャルエネルギーや密度は一定値になります。
 
-![Alt text](https://i.gyazo.com/459da705c3832863b6f6b4c4c03643ad.jpg)
+![Potential energy](images/potential-energy.jpg)
 
 > 共存状態から氷が成長する過程でのポテンシャルエネルギーの変化。低温ではより低いエネルギーに到達するものの、時間がかかる。 [^4] ここで使われている水分子モデル TIP4P/Ice の氷の融点は約 270 K と推定されており、これらの温度は融点よりもかなり低温に相当する。
 
@@ -509,7 +549,16 @@ plot 'T250.txt' u 1:3 w l
 
 全員で手分けして、250 K から 290 K まで(5 K 間隔で、ただし 270 K は除く。)のポテンシャルエネルギーの時間変化を採取し、それらの結果から、TIP4P/Ice の融点を推定して下さい。
 
-(黒板に温度を書き、そこに名前を書いてもらう)
+一人で 2 つ以上の温度を受けもつことになります。低温側は時間がかかるので、低温 1 つと高温 1 つを組にして、3-4 の方法で同時に計算して下さい。分担の例:
+
+| 担当 | 温度          |
+| ---- | ------------- |
+| A    | 255 K, 285 K  |
+| B    | 260 K, 280 K  |
+| C    | 265 K, 275 K  |
+| 余力 | 250 K, 290 K  |
+
+授業時間内は全員 3 ns まで計算し、低温側で足りない分は 3-3 の方法で延長して下さい。
 
 <!-- | ユーザ名 | 温度  | シミュレーション時間(最低) |
 | -------- | ----- | -------------------------- |
@@ -546,7 +595,7 @@ plot 'T250.txt' u 1:3 w l
 - この利用例では初期構造に氷 Ih を選び、半分を融かして固液共存状態を準備しました。これを、圧力だけ高圧に切りかえても、氷 III や氷 V と水の共存状態のシミュレーションにはなりません。結晶が自然に別の結晶に転移するには非常に時間がかかります。氷 Ih に、氷 V ほどの高圧を加えると、構造が崩壊して全部液体になるでしょう。
 - terminal を複数開き、フォルダーをコピーして、いくつもの条件で同時に計算することもできます。
 
-## 8. あと始末
+## 9. あと始末
 
 レポートも書きおわって、データが要らなくなったら、Orbstack/Docker Desktop で Image(OS のインストール CD に相当)と Container(展開後のハードディスクイメージ)の両方を消すとディスク使用量を減らせます。
 
@@ -630,11 +679,11 @@ pip install genice2
 ### 0-1 クラウドを利用するための準備
 
 1. 計算サーバ(岡山大学、あるいは Amazon EC2)にログインするためのアカウントをこちらから配布します。岡山大学の計算機を利用する場合は、まず VPN 接続の準備をし、接続できることを確認して下さい。(→9. 補遺)
-2. VSCode のウィンドウ左のアイコン![Extension](https://i.gyazo.com/fd1a561033b9f2fbc2245681c70ca67b.png)から、以下の拡張を追加して下さい。
+2. VSCode のウィンドウ左のアイコン![Extension](images/extensions-icon.png)から、以下の拡張を追加して下さい。
 
 - Remote SSH ![Remote SSH icon](https://ms-vscode-remote.gallerycdn.vsassets.io/extensions/ms-vscode-remote/remote-ssh/0.108.2023110315/1699024773750/Microsoft.VisualStudio.Services.Icons.Default)
 
-3. 所定の IP アドレスに接続します。VSCode のウィンドウ左下のボタン![Remote](https://i.gyazo.com/bf32d7cb4356d4465343a3caebc7b996.png)を押して下さい。(いろいろ聞いてきます。)
+3. 所定の IP アドレスに接続します。VSCode のウィンドウ左下のボタン![Remote](images/remote-button.png)を押して下さい。(いろいろ聞いてきます。)
 4. クラウドのコンピュータにプログラムソースを準備します。VSCode のウィンドウ中央の `Clone Git Repository...`を押し、`Clone from GitHub`と表示されたらリターンを押し、`vitroid/gromacs-usecases`を指定して下さい。保存先を聞かれたらリターンを押します。2 回目のログイン以降はこの作業は不要です。
 5. ソースを保存したフォルダーの、`MeltingPoint`フォルダーを開きます。
 <!-- 6. VSCodeのターミナルを開きます。メニューのTerminal→New Terminalでターミナルを開き、以下のコマンドで作業ディレクトリを`MeltingPoint`に切り替えます。
