@@ -6,8 +6,8 @@ authors = ["vitroid <vitroid@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
-genice2 = "^2.2.7.4"
+python = "^3.11"
+genice3 = "^3.1.1"
 
 
 [build-system]

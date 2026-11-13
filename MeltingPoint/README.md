@@ -190,7 +190,7 @@ HW     1.00800       0.000       A   0.00000E+00   0.00000E+00
 
 初期配置は、次の手順で準備します。
 
-1. [GenIce](https://github.com/vitroid/GenIce)ツールを使い、氷の結晶構造を作ります。結晶は 1:1:2 の長い直方体形状になるようにします。
+1. [GenIce3](https://github.com/genice-dev/GenIce3)ツールを使い、氷の結晶構造を作ります。結晶は 1:1:2 の長い直方体形状になるようにします。
 2. 水分子の半分を「固定」します。文字通り、最初の場所から動けなくします。
 3. 温度を 800 K まで上げて、短い分子動力学シミュレーションを行います。固定した部分は構造を保ちますが、それ以外の水分子はすぐに融解します。
 4. 温度を戻し、固定を解除します。これにより、液体と固体が半分ずつの初期構造ができます。
@@ -204,17 +204,17 @@ HW     1.00800       0.000       A   0.00000E+00   0.00000E+00
 
 ### 2-1 氷の結晶を作る
 
-[GenIce](https://github.com/vitroid/GenIce)は、さまざまな氷の結晶構造を生成するツールです。これを用い、氷 Ih(こおりいちえいち、六方晶氷 I、もっとも身近に存在する氷)を生成します。
+[GenIce3](https://github.com/genice-dev/GenIce3)は、さまざまな氷の結晶構造を生成するツールです。これを用い、氷 Ih(こおりいちえいち、六方晶氷 I、もっとも身近に存在する氷)を生成します。
 
 まず、ターミナルを開いてください。
 
-genice2 で氷の構造を生成します。
+genice3 で氷の構造を生成します。
 
 ```shell
-genice2 1h -r 3 3 6 -w tip4p > ice.gro
+genice3 1h -r 3 3 6 -e gromacs :water_model tip4p > ice.gro
 ```
 
-`-r`オプションで、単位胞を x,y,z 方向にいくつならべるかを指定しています。また、`-w`で水分子モデルの種類を指定します。">"は画面に表示される内容をファイルに書きだすことを表す記法です。
+`-r`オプションで、単位胞を x,y,z 方向にいくつならべるかを指定しています。`-e gromacs`で Gromacs の座標形式(`.gro`)で出力し、`:water_model tip4p`で水分子モデルを四点モデルにします。">"は画面に表示される内容をファイルに書きだすことを表す記法です。
 
 `ice.gro`の末尾には、こんな風に箱の大きさが nm 単位で書かれています。
 
@@ -665,7 +665,7 @@ Amazon EC2 の無料枠でも、そこそこの計算はできます。
 
 ### 9-3 Gromacs とその他のツールのインストール
 
-クラウドを使わなくても、Unix 系の OS になら、Gromacs や GenIce を簡単にインストールできます。
+クラウドを使わなくても、Unix 系の OS になら、Gromacs や GenIce3 を簡単にインストールできます。
 
 #### 9-3-1 Ubuntu/Debian Linux の場合
 
@@ -675,7 +675,7 @@ Amazon EC2 の無料枠でも、そこそこの計算はできます。
 apt update
 apt install gromacs python3 python3-pip
 pip install numpy
-pip install genice2
+pip install genice3
 ```
 
 #### 9-3-2 Redhat/Amazon Linux/CentOS7 の場合
@@ -690,7 +690,7 @@ HomeBrew では、管理者権限なしにインストールできます。
 
 ```shell
 brew install gromacs python3
-pip install genice2
+pip install genice3
 ```
 
 #### 9-3-4 Windows の場合
