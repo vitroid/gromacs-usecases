@@ -141,7 +141,7 @@ TIP4P/Ice の形状の詳細は[リンク先](http://www.sklogwiki.org/SklogWiki
 
 水分子は 3 原子でできているのですが、相互作用を質点間の相互作用で近似的に表現するために、もう一点相互作用点を追加してあるのが四点モデルと呼ばれる水モデルの特徴です。
 
-![4-site model of water](http://www.sklogwiki.org/SklogWiki/images/a/a5/Four_site_water_model.png)
+![4-site model of water](images/four-site-water.png)
 
 TIP4P/Ice の分子モデルは`ice.top`に書かれています。
 
